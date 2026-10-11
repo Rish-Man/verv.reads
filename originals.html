@@ -17,9 +17,9 @@ layout: null
     <meta property="og:url" content="https://rish-man.github.io/verv.reads/originals.html">
     <meta property="og:image" content="https://rish-man.github.io/verv.reads/verv-favicon.png">
     
+    <link rel="shortcut icon" href="verv-favicon.png">
     <link rel="icon" type="image/png" href="verv-favicon.png">
     <link rel="apple-touch-icon" href="verv-favicon.png">
-    <link rel="shortcut icon" href="verv-favicon.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,10 +46,8 @@ layout: null
         }
         @keyframes fadeInPage { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Link colors — override browser defaults */
-        a { color: inherit; text-decoration: none; }
-        a:hover { color: inherit; }
-        a:visited { color: inherit; }
+        a { text-decoration: none; }
+        a:visited { text-decoration: none; }
 
         body::before {
             content: '';
@@ -62,14 +60,14 @@ layout: null
             position: fixed; top: 20px; left: 20px;
             padding: 10px 20px;
             background: rgba(44, 42, 38, 0.1);
-            color: #2c2a26; border-radius: 50px;
+            color: #2c2a26 !important; border-radius: 50px;
             font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600;
             backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
             transition: background 0.3s ease, transform 0.3s ease;
             z-index: 100;
             -webkit-tap-highlight-color: transparent;
         }
-        .back-btn:hover { background: rgba(44, 42, 38, 0.2); transform: translateX(-3px); color: #2c2a26; }
+        .back-btn:hover { background: rgba(44, 42, 38, 0.2); transform: translateX(-3px); color: #2c2a26 !important; }
 
         .page-wrapper {
             max-width: 900px;
@@ -80,7 +78,7 @@ layout: null
         .originals-heading {
             font-family: 'Abril Fatface', cursive;
             font-size: clamp(2.5rem, 10vw, 6rem);
-            color: #1a1815;
+            color: #1a1815 !important;
             line-height: 1.1;
             margin-bottom: 25px;
             text-align: center;
@@ -99,13 +97,13 @@ layout: null
             text-align: center;
             max-width: 600px;
             margin: 0 auto 50px auto;
-            color: #4a4741;
+            color: #4a4741 !important;
         }
 
         .section-heading {
             font-family: 'Abril Fatface', cursive;
             font-size: clamp(1.5rem, 4vw, 2rem);
-            color: #1a1815;
+            color: #1a1815 !important;
             margin: 40px 0 22px 0;
             padding-bottom: 12px;
             border-bottom: 1px solid rgba(44, 42, 38, 0.15);
@@ -132,13 +130,13 @@ layout: null
         .story-link h3 {
             font-family: 'Abril Fatface', cursive;
             font-size: clamp(1.2rem, 3.5vw, 1.5rem);
-            color: #1a1815;
+            color: #1a1815 !important;
             margin-bottom: 8px;
         }
 
         .story-link p {
             font-size: clamp(0.85rem, 2.3vw, 0.95rem);
-            color: #4a4741;
+            color: #4a4741 !important;
             margin-bottom: 10px;
         }
 
@@ -146,7 +144,7 @@ layout: null
             font-family: 'Poppins', sans-serif;
             font-size: 0.75rem;
             font-weight: 600;
-            color: #2c2a26;
+            color: #2c2a26 !important;
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
@@ -173,13 +171,13 @@ layout: null
         .quick-link h3 {
             font-family: 'Abril Fatface', cursive;
             font-size: clamp(1.1rem, 3.5vw, 1.4rem);
-            color: #1a1815;
+            color: #1a1815 !important;
             margin-bottom: 8px;
         }
         .quick-link p {
             font-family: 'Poppins', sans-serif;
             font-size: 0.75rem;
-            color: #6a6760;
+            color: #6a6760 !important;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -191,7 +189,7 @@ layout: null
             padding: 35px 25px;
             text-align: center;
             font-style: italic;
-            color: #8a8781;
+            color: #8a8781 !important;
             margin-bottom: 20px;
             font-size: clamp(0.9rem, 2.4vw, 1rem);
         }
@@ -200,7 +198,7 @@ layout: null
             position: fixed; bottom: 20px; right: 20px;
             display: inline-flex; align-items: center; gap: 8px;
             padding: 14px 22px;
-            background: #2c2a26; color: #fcf6e8;
+            background: #2c2a26 !important; color: #fcf6e8 !important;
             font-family: 'Poppins', sans-serif;
             font-size: 0.85rem; font-weight: 600;
             border-radius: 50px;
@@ -209,7 +207,7 @@ layout: null
             z-index: 999;
             -webkit-tap-highlight-color: transparent;
         }
-        .follow-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.35); color: #fcf6e8; }
+        .follow-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.35); color: #fcf6e8 !important; }
 
         footer {
             background: #fcf6e8;
@@ -227,7 +225,7 @@ layout: null
         .footer-logo {
             font-family: 'Abril Fatface', cursive;
             font-size: 1.5rem;
-            color: #1a1815;
+            color: #1a1815 !important;
             margin-bottom: 18px;
             display: block;
         }
@@ -242,7 +240,7 @@ layout: null
         }
 
         .footer-links a {
-            color: #6a6760;
+            color: #6a6760 !important;
             font-family: 'Poppins', sans-serif;
             font-size: 0.8rem;
             font-weight: 500;
@@ -252,14 +250,14 @@ layout: null
             padding: 6px 0;
             -webkit-tap-highlight-color: transparent;
         }
-        .footer-links a:hover { color: #1a1815; }
+        .footer-links a:hover { color: #1a1815 !important; }
 
         .footer-links .divider-dot { color: #b0aca0; font-size: 0.8rem; }
 
         .footer-copyright {
             font-family: 'Josefin Sans', sans-serif;
             font-size: 0.75rem;
-            color: #8a8781;
+            color: #8a8781 !important;
             letter-spacing: 0.5px;
         }
 
@@ -331,8 +329,6 @@ layout: null
                 <a href="https://rish-man.github.io/SDG-Theme-based-Games/" target="_blank">SDG Games</a>
                 <span class="divider-dot">•</span>
                 <a href="https://instagram.com/verv.reads" target="_blank">Instagram</a>
-                <span class="divider-dot">•</span>
-                <a href="https://vervreads.substack.com" target="_blank">Substack</a>
             </div>
 
             <p class="footer-copyright">© 2026 Verv · Made with care · No cookies, no tracking</p>
