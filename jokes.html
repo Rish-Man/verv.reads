@@ -6,15 +6,15 @@ layout: null
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verv | Stories & Jokes</title>
+    <title>Jokes | Verv</title>
     
     <meta name="application-name" content="Verv">
-    <meta name="description" content="Stories worth your time. Jokes worth retelling. A small corner of the internet with no algorithms — just good writing.">
+    <meta name="description" content="Short jokes worth retelling. New ones added regularly.">
     <meta property="og:site_name" content="Verv">
-    <meta property="og:title" content="Verv | Stories & Jokes">
-    <meta property="og:description" content="Stories worth your time. Jokes worth retelling. A small corner of the internet with no algorithms — just good writing.">
+    <meta property="og:title" content="Jokes | Verv">
+    <meta property="og:description" content="Short jokes worth retelling. New ones added regularly.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://rish-man.github.io/verv.reads/">
+    <meta property="og:url" content="https://rish-man.github.io/verv.reads/jokes.html">
     <meta property="og:image" content="https://rish-man.github.io/verv.reads/verv-favicon.png">
     
     <link rel="shortcut icon" href="verv-favicon.png">
@@ -23,447 +23,213 @@ layout: null
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;800&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Poppins:wght@300;400;600&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { overflow-x: hidden; }
-        :root { --bg-dark: #050505; --text-main: #ffffff; --text-muted: #a0a0a0; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Poppins', sans-serif;
+            background-image: url('originals-bg.png.avif');
+            background-color: #fcf6e8;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            font-family: 'Josefin Sans', sans-serif;
+            color: #2c2a26;
+            line-height: 1.8;
             overflow-x: hidden;
-            line-height: 1.6;
-            transition: filter 0.6s ease, transform 0.6s ease;
+            animation: fadeInPage 0.8s ease forwards;
+            opacity: 0;
             -webkit-text-size-adjust: 100%;
         }
+        @keyframes fadeInPage { from { opacity: 0; } to { opacity: 1; } }
 
         a { text-decoration: none; }
         a:visited { text-decoration: none; }
 
-        body.blur-out {
-            filter: blur(15px) brightness(1.5);
-            transform: scale(1.05);
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.12) 100%);
+            z-index: -1; pointer-events: none;
         }
 
-        .blur-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #fcf6e8; z-index: 9999; opacity: 0;
-            pointer-events: none; transition: opacity 0.6s ease;
-        }
-        .blur-overlay.active { opacity: 1; pointer-events: all; }
-
-        .bg-wrapper {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -2; background-image: url('bg.png');
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-        }
-        .bg-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; background: linear-gradient(to bottom, rgba(5,5,5,0.4) 0%, rgba(5,5,5,0.8) 60%, rgba(5,5,5,1) 100%);
-        }
-
-        nav {
-            position: fixed; top: 0; width: 100%;
-            padding: 14px 5vw;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(5, 5, 5, 0.5); backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        .back-btn {
+            position: fixed; top: 20px; left: 20px;
+            padding: 10px 20px;
+            background: rgba(44, 42, 38, 0.1);
+            color: #2c2a26 !important; border-radius: 50px;
+            font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600;
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            transition: background 0.3s ease, transform 0.3s ease;
             z-index: 100;
+            -webkit-tap-highlight-color: transparent;
         }
-        .nav-logo { font-family: 'Pacifico', cursive; font-size: 1.7rem; color: #ffffff !important; }
-        .nav-links { display: flex; gap: 28px; }
-        .nav-links a { color: #a0a0a0 !important; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s ease; }
-        .nav-links a:hover { color: #ffffff !important; }
+        .back-btn:hover { background: rgba(44, 42, 38, 0.2); transform: translateX(-3px); color: #2c2a26 !important; }
 
-        .hero {
-            min-height: 100vh;
-            display: flex; flex-direction: column; justify-content: center;
-            padding: 110px 5vw 60px 5vw;
-            max-width: 1200px; margin: 0 auto;
-            width: 100%;
-        }
-        .hero-content { max-width: 720px; width: 100%; }
-
-        .brand-title {
-            font-family: 'Pacifico', cursive;
-            font-size: clamp(3rem, 15vw, 7rem);
-            line-height: 1; margin-bottom: 20px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-            word-break: break-word;
-            color: #ffffff !important;
+        .page-wrapper {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: clamp(100px, 15vw, 120px) 5vw 60px 5vw;
         }
 
-        .hero-description {
-            font-family: 'Josefin Sans', sans-serif;
-            font-weight: 300;
+        .page-heading {
+            font-family: 'Abril Fatface', cursive;
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            color: #1a1815 !important; line-height: 1.1;
+            text-align: center; margin-bottom: 18px;
+        }
+
+        .page-subtitle {
+            text-align: center; color: #6a6760 !important;
+            margin-bottom: 50px; font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .joke {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(44, 42, 38, 0.1);
+            border-radius: 12px;
+            padding: clamp(22px, 4vw, 30px);
+            margin-bottom: 18px;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .joke:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.6); }
+
+        .joke .setup {
             font-size: clamp(1rem, 2.6vw, 1.15rem);
-            line-height: 1.7;
-            color: #d1d1d1 !important;
-            margin-bottom: 25px;
+            font-weight: 400;
+            color: #2c2a26 !important; margin-bottom: 10px;
         }
-        .hero-description p { margin-bottom: 18px; color: #d1d1d1; }
 
-        .hero-description .opening {
+        .joke .punchline {
+            font-size: clamp(1rem, 2.6vw, 1.15rem);
             font-weight: 600;
-            font-size: clamp(1.15rem, 3vw, 1.4rem);
+            color: #1a1815 !important;
+            margin-bottom: 6px;
+        }
+        .joke .punchline:last-child { margin-bottom: 0; }
+
+        .ad-box {
+            display: block;
+            margin: 45px 0;
+            padding: 22px 24px;
+            background: #ffffff;
+            border: 1px solid rgba(44, 42, 38, 0.12);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ad-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .ad-tag {
+            display: block;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #b0aca0 !important;
+            margin-bottom: 12px;
+        }
+
+        .ad-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ad-icon {
+            width: 52px;
+            height: 52px;
+            background: #2874f0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #ffffff !important;
-            margin-bottom: 22px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .ad-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ad-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(0.95rem, 2.6vw, 1.05rem);
+            font-weight: 600;
+            color: #1a1815 !important;
+            margin-bottom: 4px;
             line-height: 1.3;
         }
 
-        .dm-line {
-            font-weight: 400; color: #ffffff !important;
-            background: rgba(255, 255, 255, 0.06);
-            border-left: 3px solid #ffffff;
-            padding: 14px 20px;
-            border-radius: 0 8px 8px 0;
-            margin-top: 25px;
-            font-size: clamp(0.95rem, 2.4vw, 1.05rem);
-        }
-        .dm-line .handle {
-            font-weight: 600; color: #ffffff !important;
-            text-decoration: underline; text-underline-offset: 3px;
+        .ad-desc {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: clamp(0.8rem, 2.2vw, 0.88rem);
+            color: #6a6760 !important;
+            line-height: 1.4;
         }
 
-        .personal-note {
-            font-style: italic;
-            font-size: clamp(0.85rem, 2.1vw, 0.95rem);
-            color: #999 !important; margin-top: 20px; line-height: 1.6;
-        }
-
-        .cta-row {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-
-        .uncover-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 16px 36px;
-            font-size: clamp(0.85rem, 2.2vw, 1rem);
-            font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-            color: #000000 !important; background-color: #ffffff !important;
-            border: none; border-radius: 50px; cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255,255,255,0.2);
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .uncover-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255,255,255,0.4);
-            background-color: #f0f0f0 !important;
-            color: #000000 !important;
-        }
-
-        .subscribe-hero-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 16px 36px;
-            font-size: clamp(0.85rem, 2.2vw, 1rem);
-            font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-            color: #ffffff !important; background-color: transparent !important;
-            border: 1.5px solid rgba(255,255,255,0.4);
-            border-radius: 50px; cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .subscribe-hero-btn:hover {
-            background-color: rgba(255,255,255,0.1) !important;
-            border-color: #ffffff;
-            transform: translateY(-3px);
+        .ad-cta {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 22px;
+            background: #2874f0;
             color: #ffffff !important;
-        }
-
-        .joke-of-day {
-            margin-top: 40px;
-            padding: clamp(24px, 4vw, 45px) clamp(20px, 4vw, 50px);
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-left: 4px solid #ffffff;
-            border-radius: 0 16px 16px 0;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .joke-of-day .joke-label {
             font-family: 'Poppins', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            color: #999 !important;
-            margin-bottom: 14px;
-        }
-
-        .joke-of-day .joke-setup {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: clamp(1rem, 2.8vw, 1.35rem);
-            font-weight: 400;
-            color: #e0e0e0 !important;
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-
-        .joke-of-day .joke-punchline {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: clamp(1.1rem, 3vw, 1.45rem);
-            font-weight: 600;
-            color: #ffffff !important;
-            line-height: 1.5;
-            margin-bottom: 6px;
-        }
-        .joke-of-day .joke-punchline:last-child { margin-bottom: 0; }
-
-        .joke-of-day .joke-submit {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: clamp(0.8rem, 2.2vw, 0.9rem);
-            color: #8a8a8a !important;
-            font-style: italic;
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            line-height: 1.5;
-        }
-        .joke-of-day .joke-submit a {
-            color: #d1d1d1 !important;
-            text-decoration: underline;
-            text-underline-offset: 3px;
-            font-weight: 600;
-        }
-
-        .joke-of-day .joke-invite {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: clamp(0.95rem, 2.6vw, 1.2rem);
-            color: #d1d1d1 !important;
-            line-height: 1.6;
-        }
-
-        .joke-of-day .joke-invite a {
-            color: #ffffff !important;
-            text-decoration: underline;
-            text-underline-offset: 3px;
-            font-weight: 600;
-        }
-
-        .newsletter-section {
-            background: var(--bg-dark);
-            padding: clamp(50px, 8vw, 80px) 5vw clamp(70px, 10vw, 100px) 5vw;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .newsletter-inner {
-            max-width: 720px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .newsletter-inner h2 {
-            font-family: 'Abril Fatface', cursive;
-            font-size: clamp(1.6rem, 5vw, 3rem);
-            color: #ffffff !important;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        .newsletter-inner p {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
-            color: #b0b0b0 !important;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .newsletter-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 16px 40px;
-            font-size: clamp(0.8rem, 2vw, 0.95rem);
-            font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;
-            color: #000000 !important; background-color: #ffffff !important;
-            border: none; border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255,255,255,0.15);
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .newsletter-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255,255,255,0.3);
-            background-color: #f0f0f0 !important;
-            color: #000000 !important;
-        }
-
-        .affiliate-section {
-            background: var(--bg-dark);
-            padding: 60px 5vw 80px 5vw;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .affiliate-inner {
-            max-width: 620px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .affiliate-label {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            color: #999 !important;
-            margin-bottom: 15px;
-        }
-
-        .affiliate-heading {
-            font-family: 'Abril Fatface', cursive;
-            font-size: clamp(1.5rem, 4.5vw, 2.2rem);
-            color: #ffffff !important;
-            margin-bottom: 15px;
-            line-height: 1.2;
-        }
-
-        .affiliate-text {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
-            color: #b0b0b0 !important;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-
-        .affiliate-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 16px 40px;
-            font-size: clamp(0.85rem, 2vw, 0.95rem);
-            font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;
-            color: #000000 !important; background-color: #ffffff !important;
-            border: none; border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255,255,255,0.15);
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .affiliate-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255,255,255,0.3);
-            background-color: #f0f0f0 !important;
-            color: #000000 !important;
-        }
-
-        .affiliate-disclosure {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: 0.72rem;
-            color: #666 !important;
-            margin-top: 20px;
-            line-height: 1.5;
-            font-style: italic;
-        }
-
-        /* NEWS SECTION */
-        .news-section {
-            background: var(--bg-dark);
-            padding: 50px 5vw 60px 5vw;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .news-inner {
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        .news-label {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            color: #999 !important;
-            margin-bottom: 18px;
-            text-align: center;
-        }
-
-        .news-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .news-item {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: border-color 0.3s ease;
-        }
-
-        .news-item:last-child {
-            border-bottom: none;
-        }
-
-        .news-item:hover {
-            border-bottom-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .news-source {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.65rem;
+            font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #666 !important;
-            flex-shrink: 0;
-            min-width: 80px;
+            border-radius: 50px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .ad-box:hover .ad-cta {
+            background: #1a5cd4;
+            transform: translateY(-1px);
         }
 
-        .news-title {
+        .ad-disclosure {
+            display: block;
+            margin-top: 14px;
             font-family: 'Josefin Sans', sans-serif;
-            font-size: clamp(0.9rem, 2.3vw, 1rem);
-            color: #d1d1d1 !important;
-            line-height: 1.4;
-            transition: color 0.3s ease;
-        }
-
-        .news-item:hover .news-title {
-            color: #ffffff !important;
-        }
-
-        .news-loading {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: 0.9rem;
-            color: #666 !important;
-            text-align: center;
+            font-size: 0.68rem;
+            color: #a0a0a0 !important;
             font-style: italic;
-            padding: 20px 0;
+            line-height: 1.4;
         }
 
-        .support-btn {
+        .follow-btn {
             position: fixed; bottom: 20px; right: 20px;
             display: inline-flex; align-items: center; gap: 8px;
             padding: 14px 22px;
-            background: #ffffff !important; color: #000000 !important;
+            background: #2c2a26 !important; color: #fcf6e8 !important;
             font-family: 'Poppins', sans-serif;
             font-size: 0.85rem; font-weight: 600;
             border-radius: 50px;
-            box-shadow: 0 6px 20px rgba(255,255,255,0.25);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             z-index: 999;
             -webkit-tap-highlight-color: transparent;
         }
-        .support-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(255,255,255,0.4); color: #000000 !important; }
+        .follow-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.35); color: #fcf6e8 !important; }
 
         footer {
-            background: #000000;
+            background: #fcf6e8;
             padding: 45px 5vw 35px 5vw;
             text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(44, 42, 38, 0.1);
+            margin-top: 60px;
         }
 
         .footer-inner {
@@ -472,9 +238,9 @@ layout: null
         }
 
         .footer-logo {
-            font-family: 'Pacifico', cursive;
+            font-family: 'Abril Fatface', cursive;
             font-size: 1.5rem;
-            color: #ffffff !important;
+            color: #1a1815 !important;
             margin-bottom: 18px;
             display: block;
         }
@@ -489,7 +255,7 @@ layout: null
         }
 
         .footer-links a {
-            color: #b0b0b0 !important;
+            color: #6a6760 !important;
             font-family: 'Poppins', sans-serif;
             font-size: 0.8rem;
             font-weight: 500;
@@ -499,157 +265,70 @@ layout: null
             padding: 6px 0;
             -webkit-tap-highlight-color: transparent;
         }
-        .footer-links a:hover { color: #ffffff !important; }
+        .footer-links a:hover { color: #1a1815 !important; }
 
-        .footer-links .divider-dot {
-            color: #444;
-            font-size: 0.8rem;
-        }
+        .footer-links .divider-dot { color: #b0aca0; font-size: 0.8rem; }
 
         .footer-copyright {
             font-family: 'Josefin Sans', sans-serif;
             font-size: 0.75rem;
-            color: #666 !important;
+            color: #8a8781 !important;
             letter-spacing: 0.5px;
         }
 
         @media (max-width: 768px) {
-            nav { padding: 12px 5vw; }
-            .nav-logo { font-size: 1.5rem; }
-            .nav-links { display: none; }
-
-            .hero { padding: 100px 5vw 50px 5vw; text-align: left; }
-
-            .brand-title { margin-bottom: 16px; }
-
-            .cta-row { flex-direction: column; gap: 12px; }
-            .uncover-btn, .subscribe-hero-btn { width: 100%; padding: 18px 24px; }
-
-            .newsletter-btn { width: 100%; padding: 18px 24px; }
-            .affiliate-btn { width: 100%; padding: 18px 24px; }
-
-            .news-item { flex-direction: column; gap: 4px; }
-            .news-source { min-width: auto; }
-
+            .back-btn { top: 15px; left: 15px; padding: 8px 16px; font-size: 0.8rem; }
+            .follow-btn { bottom: 15px; right: 15px; padding: 12px 18px; font-size: 0.75rem; }
             footer { padding: 40px 5vw 30px 5vw; }
             .footer-links { flex-direction: column; gap: 4px; }
             .footer-links .divider-dot { display: none; }
             .footer-links a { padding: 8px 0; }
-
-            .support-btn { bottom: 15px; right: 15px; padding: 12px 18px; font-size: 0.75rem; }
-        }
-
-        @media (max-width: 380px) {
-            nav { padding: 10px 4vw; }
-            .nav-logo { font-size: 1.3rem; }
-            .hero { padding: 90px 4vw 40px 4vw; }
-            .brand-title { font-size: 3rem; }
-            .dm-line { padding: 12px 16px; }
-            .joke-of-day { padding: 20px 18px; border-left-width: 3px; }
+            .ad-box { padding: 18px 20px; }
+            .ad-icon { width: 44px; height: 44px; font-size: 1.1rem; }
+            .ad-row { gap: 14px; }
+            .ad-cta { width: 100%; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <div class="blur-overlay" id="blurOverlay"></div>
+    <a href="originals.html" class="back-btn">← Back to The Originals</a>
 
-    <div class="bg-wrapper"></div>
-    <div class="bg-overlay"></div>
+    <div class="page-wrapper">
+        <h1 class="page-heading">Jokes</h1>
+        <p class="page-subtitle">Because laughing is underrated. New jokes added regularly.</p>
 
-    <nav>
-        <a href="#" class="nav-logo">Verv</a>
-        <div class="nav-links">
-            <a href="originals.html">Stories</a>
-            <a href="jokes.html">Jokes</a>
-            <a href="songs.html">Songs</a>
+        {% assign sorted_jokes = site.jokes | sort: "date" | reverse %}
+        {% for joke in sorted_jokes %}
+        <div class="joke">
+            <p class="setup">{{ joke.setup }}</p>
+            {% for p in joke.punchlines %}
+            <p class="punchline">{{ p.line }}</p>
+            {% endfor %}
         </div>
-    </nav>
+        {% endfor %}
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="brand-title">Verv</h1>
-            
-            <div class="hero-description">
-                <p class="opening">Hey, you found Verv.</p>
-                
-                <p>Quick heads-up: this isn't one of those sites with a thousand pop-ups, autoplay videos, and articles written by robots. It's just a place for good stories and good jokes, curated by an actual human — me.</p>
-                
-                <p>Every piece you see here earned its spot. Some made me laugh out loud on a crowded train. Some made me sit quietly for a minute after reading. Some I read twice just to enjoy the way they were written. That's the bar.</p>
-                
-                <p>If you write — or if you've ever thought <em>"I could write better than this"</em> — don't keep it to yourself.</p>
+        {% if site.jokes.size == 0 %}
+        <div class="joke">
+            <p class="setup">No jokes yet.</p>
+            <p class="punchline">Check back soon — they're coming.</p>
+        </div>
+        {% endif %}
 
-                <p class="dm-line">
-                    Slide into my DMs on Instagram at <a href="https://instagram.com/verv.reads" target="_blank" class="handle">@verv.reads</a>. Send me your stories, your jokes, your half-finished drafts, your weird ideas. I genuinely love reading them, and I'm always down to give feedback, swap notes, or just chat about what makes writing work.
-                </p>
-
-                <p class="personal-note">No gatekeeping here. Oh btw, I am also not a great writer. It's just something I do for passing time.</p>
+        <a href="https://fktr.in/aNbid1N" target="_blank" rel="noopener sponsored" class="ad-box">
+            <span class="ad-tag">Sponsored</span>
+            <div class="ad-row">
+                <div class="ad-icon">🛒</div>
+                <div class="ad-body">
+                    <div class="ad-title">Shopping on Flipkart?</div>
+                    <div class="ad-desc">Start here — costs you nothing and supports Verv.</div>
+                </div>
             </div>
+            <span class="ad-cta">Shop Now →</span>
+            <span class="ad-disclosure">Affiliate link · we may earn a small commission</span>
+        </a>
 
-            {% assign latest_joke = site.jokes | sort: "date" | reverse | first %}
-
-            <div class="joke-of-day">
-                <div class="joke-label">Joke of the Day</div>
-                {% if latest_joke %}
-                    <p class="joke-setup">{{ latest_joke.setup }}</p>
-                    {% for p in latest_joke.punchlines %}
-                    <p class="joke-punchline">{{ p.line }}</p>
-                    {% endfor %}
-                    <p class="joke-submit">
-                        Got a better one? DM <a href="https://instagram.com/verv.reads" target="_blank">@verv.reads</a> — I'll feature the best ones here.
-                    </p>
-                {% else %}
-                    <p class="joke-invite">
-                        Would you like to add one? DM me at 
-                        <a href="https://instagram.com/verv.reads" target="_blank">@verv.reads</a> — I'll feature the best ones here.
-                    </p>
-                {% endif %}
-            </div>
-
-            <div class="cta-row">
-                <button class="uncover-btn" id="uncoverBtn">
-                    Uncover More <span>→</span>
-                </button>
-                <a href="https://ig.me/m/verv.reads?text=Hey!%20I%20want%20to%20subscribe%20to%20Verv!" target="_blank" class="subscribe-hero-btn">
-                    Subscribe via DM
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section class="newsletter-section">
-        <div class="newsletter-inner">
-            <h2>Never miss a story.</h2>
-            <p>I'll DM you when new posts go live. No spam, no algorithms — just a heads-up the moment something new drops on Verv.</p>
-            <a href="https://ig.me/m/verv.reads?text=Hey!%20I%20want%20to%20subscribe%20to%20Verv!" target="_blank" class="newsletter-btn">
-                Subscribe via Instagram DM →
-            </a>
-        </div>
-    </section>
-
-    <section class="affiliate-section">
-        <div class="affiliate-inner">
-            <p class="affiliate-label">Support Verv — for free</p>
-            <h3 class="affiliate-heading">Shopping online today?</h3>
-            <p class="affiliate-text">
-                If you're going to buy something from Flipkart anyway, start here first. It costs you nothing extra, and Verv earns a small commission that keeps the site running.
-            </p>
-            <a href="https://fktr.in/aNbid1N" target="_blank" rel="noopener sponsored" class="affiliate-btn">
-                Shop on Flipkart →
-            </a>
-            <p class="affiliate-disclosure">
-                This is an affiliate link. If you buy through it, Verv may earn a small commission at no extra cost to you.
-            </p>
-        </div>
-    </section>
-
-    <section class="news-section">
-        <div class="news-inner">
-            <p class="news-label">From around the web</p>
-            <div id="news-feed" class="news-feed">
-                <p class="news-loading">Loading headlines...</p>
-            </div>
-        </div>
-    </section>
+    </div>
 
     <footer>
         <div class="footer-inner">
@@ -671,53 +350,9 @@ layout: null
         </div>
     </footer>
 
-    <a href="https://instagram.com/verv.reads" target="_blank" class="support-btn">
-        ☕ Support the Writer
+    <a href="https://instagram.com/verv.reads" target="_blank" class="follow-btn">
+        📷 Follow @verv.reads
     </a>
-
-    <script>
-        document.getElementById('uncoverBtn').addEventListener('click', function(e) {
-            e.preventDefault(); 
-            
-            const body = document.body;
-            const overlay = document.getElementById('blurOverlay');
-            
-            body.classList.add('blur-out');
-            overlay.classList.add('active');
-            
-            setTimeout(function() {
-                window.location.href = 'originals.html';
-            }, 650); 
-        });
-
-        fetch('news.json')
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('news-feed');
-                let items = [];
-                if (data && data.items && data.items.length > 0) {
-                    items = data.items;
-                } else if (Array.isArray(data) && data.length > 0) {
-                    data.forEach(feed => {
-                        if (feed.items) items = items.concat(feed.items);
-                    });
-                }
-
-                if (items.length > 0) {
-                    container.innerHTML = items.slice(0, 6).map(item => `
-                        <a href="${item.link}" target="_blank" rel="noopener" class="news-item">
-                            <span class="news-source">The Hindu</span>
-                            <span class="news-title">${item.title}</span>
-                        </a>
-                    `).join('');
-                } else {
-                    container.innerHTML = '<p class="news-loading">Check back soon for headlines.</p>';
-                }
-            })
-            .catch(() => {
-                document.getElementById('news-feed').innerHTML = '<p class="news-loading">Check back soon for headlines.</p>';
-            });
-    </script>
 
 </body>
 </html>
