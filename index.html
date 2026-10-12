@@ -285,9 +285,6 @@ layout: null
             color: #000000 !important;
         }
 
-        /* ============================================ */
-        /* AIRPORT DEPARTURE BOARD NEWS                 */
-        /* ============================================ */
         .board-section {
             background: var(--bg-dark);
             padding: 60px 5vw 80px 5vw;
@@ -440,10 +437,7 @@ layout: null
         }
 
         .board-row:last-child { border-bottom: none; }
-
-        .board-row:hover {
-            background: rgba(255, 255, 255, 0.04);
-        }
+        .board-row:hover { background: rgba(255, 255, 255, 0.04); }
 
         .board-row.category {
             font-family: 'JetBrains Mono', 'Courier New', monospace;
@@ -455,9 +449,6 @@ layout: null
             text-shadow: 0 0 6px rgba(125, 211, 252, 0.35);
         }
 
-        /* ============================== */
-        /* ROLLING HEADLINE WINDOW         */
-        /* ============================== */
         .roll-window {
             position: relative;
             height: 1.3em;
@@ -503,9 +494,7 @@ layout: null
         .board-link:hover .board-row.category { color: #a8e6ff !important; }
         .board-link:hover .board-row.time { color: rgba(255,255,255,0.9) !important; }
 
-        .flicker {
-            animation: flicker 0.25s ease-in-out;
-        }
+        .flicker { animation: flicker 0.25s ease-in-out; }
 
         @keyframes flicker {
             0% { color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.15); }
@@ -824,7 +813,6 @@ layout: null
         </div>
     </section>
 
-    <!-- AIRPORT DEPARTURE BOARD NEWS -->
     <section class="board-section">
         <div class="board-wrapper">
             <div class="board-header">
@@ -842,7 +830,7 @@ layout: null
                 </div>
             </div>
             <div class="board-footer">
-                Aggregated from The Hindu · Indian Express · ABP Live · Updated every 6 hours
+                Aggregated from The Hindu · Hindustan Times · Updated every 6 hours
             </div>
         </div>
     </section>
@@ -936,13 +924,29 @@ layout: null
 
         let allItems = [];
 
+        // Robust date parser — strips whitespace, tries multiple formats
         function parseDate(dateStr) {
             if (!dateStr) return null;
-            try {
-                const d = new Date(dateStr);
-                if (isNaN(d.getTime())) return null;
-                return d;
-            } catch (e) { return null; }
+            if (typeof dateStr !== 'string') return null;
+
+            const cleaned = dateStr.trim();
+            if (!cleaned) return null;
+
+            let d = new Date(cleaned);
+            if (!isNaN(d.getTime())) return d;
+
+            // Try replacing the first space in "Sun, 11 Oct 2026..." with ", "
+            d = new Date(cleaned.replace(/\s+/, ' '));
+            if (!isNaN(d.getTime())) return d;
+
+            // Try ISO format if it looks like it
+            const isoMatch = cleaned.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+            if (isoMatch) {
+                d = new Date(cleaned);
+                if (!isNaN(d.getTime())) return d;
+            }
+
+            return null;
         }
 
         function formatTime(dateStr) {
@@ -1058,14 +1062,16 @@ layout: null
         }
 
         // ============================================
-        // ROLLING ANIMATION (like a combination lock)
-        // Each row rolls independently, staggered.
+        // ROLLING ANIMATION — wider stagger + jitter
+        // Every row rolls once every 45s.
+        // Rows are staggered 6s apart + random jitter.
         // ============================================
         function startRolling(initialRows) {
-            // Wait 5s before starting, then stagger rows 4s apart
             setTimeout(() => {
                 for (let i = 0; i < initialRows.length; i++) {
-                    const stagger = i * 4000;
+                    // Base stagger: 6 seconds apart
+                    // Plus random jitter between 0 and 3 seconds
+                    const stagger = i * 6000 + Math.random() * 3000;
                     setTimeout(() => {
                         startRowRolling(i, initialRows[i]);
                     }, stagger);
@@ -1080,7 +1086,6 @@ layout: null
                 const pool = getFlipPool();
                 if (pool.length === 0) return;
 
-                // Pick a different headline
                 let nextItem = null;
                 let attempts = 0;
                 while (attempts < 20) {
@@ -1097,10 +1102,10 @@ layout: null
                 currentRow = nextItem;
             };
 
-            // First roll happens 45 seconds after startRowRolling is called
             setTimeout(() => {
                 rollOnce();
-                setInterval(rollOnce, 45000);
+                // 45s interval + random jitter so rows never sync up
+                setInterval(rollOnce, 45000 + Math.random() * 5000);
             }, 45000);
         }
 
@@ -1112,30 +1117,24 @@ layout: null
 
             if (!stackEl || !linkEl) return;
 
-            // Add the new headline BELOW the current one
             const newItem = document.createElement('div');
             newItem.className = 'roll-item';
             newItem.textContent = nextItem.title;
             stackEl.appendChild(newItem);
 
-            // Give the browser a frame to render
             requestAnimationFrame(() => {
-                // Roll the stack up by one row-height
                 stackEl.style.transform = 'translateY(-1.3em)';
             });
 
-            // Update category, time, and link after the roll finishes
             setTimeout(() => {
                 if (categoryEl) categoryEl.textContent = nextItem.category;
                 if (timeEl) timeEl.textContent = nextItem.time;
                 linkEl.href = nextItem.link;
 
-                // Clean up — remove the old top item, reset the transform
                 const firstChild = stackEl.firstElementChild;
                 if (firstChild) firstChild.remove();
                 stackEl.style.transition = 'none';
                 stackEl.style.transform = 'translateY(0)';
-                // Restore the transition on next frame
                 requestAnimationFrame(() => {
                     stackEl.style.transition = '';
                 });
