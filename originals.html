@@ -151,7 +151,7 @@ layout: null
 
         .quick-links {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 15px;
             margin-top: 20px;
         }
@@ -198,16 +198,16 @@ layout: null
             position: fixed; bottom: 20px; right: 20px;
             display: inline-flex; align-items: center; gap: 8px;
             padding: 14px 22px;
-            background: #ffffff !important; color: #000000 !important;
+            background: #2c2a26 !important; color: #fcf6e8 !important;
             font-family: 'Poppins', sans-serif;
             font-size: 0.85rem; font-weight: 600;
             border-radius: 50px;
-            box-shadow: 0 6px 20px rgba(255,255,255,0.25);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             z-index: 999;
             -webkit-tap-highlight-color: transparent;
         }
-        .support-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(255,255,255,0.4); color: #000000 !important; }
+        .support-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.35); color: #fcf6e8 !important; }
 
         footer {
             background: #fcf6e8;
@@ -217,10 +217,7 @@ layout: null
             margin-top: 60px;
         }
 
-        .footer-inner {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+        .footer-inner { max-width: 900px; margin: 0 auto; }
 
         .footer-logo {
             font-family: 'Abril Fatface', cursive;
@@ -329,6 +326,10 @@ layout: null
                 <h3>Song Highlights</h3>
                 <p>Music & Words</p>
             </a>
+            <a href="eats.html" class="quick-link">
+                <h3>The Eats</h3>
+                <p>On the Menu</p>
+            </a>
         </div>
     </div>
 
@@ -342,6 +343,8 @@ layout: null
                 <a href="jokes.html">Jokes</a>
                 <span class="divider-dot">•</span>
                 <a href="songs.html">Songs</a>
+                <span class="divider-dot">•</span>
+                <a href="eats.html">The Eats</a>
                 <span class="divider-dot">•</span>
                 <a href="news.html">News</a>
                 <span class="divider-dot">•</span>
