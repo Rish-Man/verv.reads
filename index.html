@@ -924,37 +924,42 @@ layout: null
 
         let allItems = [];
 
-        // Robust date parser — strips whitespace, tries multiple formats
-        function parseDate(dateStr) {
-            if (!dateStr) return null;
-            if (typeof dateStr !== 'string') return null;
+        // Bulletproof time extractor
+        // Tries three approaches and always returns something useful
+        function extractTime(rawDate) {
+            if (!rawDate || typeof rawDate !== 'string') return '--:--';
 
-            const cleaned = dateStr.trim();
-            if (!cleaned) return null;
+            const cleaned = rawDate.trim();
+            if (!cleaned) return '--:--';
 
-            let d = new Date(cleaned);
-            if (!isNaN(d.getTime())) return d;
-
-            // Try replacing the first space in "Sun, 11 Oct 2026..." with ", "
-            d = new Date(cleaned.replace(/\s+/, ' '));
-            if (!isNaN(d.getTime())) return d;
-
-            // Try ISO format if it looks like it
-            const isoMatch = cleaned.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
-            if (isoMatch) {
-                d = new Date(cleaned);
-                if (!isNaN(d.getTime())) return d;
+            // Approach 1: regex directly on the string — most reliable across all browsers
+            // Matches "HH:MM" in patterns like "Mon, 12 Oct 2026 21:06:48 +0530"
+            const timeMatch = cleaned.match(/(\d{1,2}):(\d{2}):\d{2}/);
+            if (timeMatch) {
+                const hh = String(timeMatch[1]).padStart(2, '0');
+                const mm = String(timeMatch[2]).padStart(2, '0');
+                return hh + ':' + mm;
             }
 
-            return null;
+            // Approach 2: try Date parsing (for ISO format)
+            const d = new Date(cleaned);
+            if (!isNaN(d.getTime())) {
+                const hh = String(d.getHours()).padStart(2, '0');
+                const mm = String(d.getMinutes()).padStart(2, '0');
+                return hh + ':' + mm;
+            }
+
+            // Approach 3: nothing worked
+            return '--:--';
         }
 
-        function formatTime(dateStr) {
-            const d = parseDate(dateStr);
-            if (!d) return '--:--';
-            const hh = String(d.getHours()).padStart(2, '0');
-            const mm = String(d.getMinutes()).padStart(2, '0');
-            return hh + ':' + mm;
+        // For sorting purposes — get a numeric timestamp
+        function extractTimestamp(rawDate) {
+            if (!rawDate || typeof rawDate !== 'string') return 0;
+            const cleaned = rawDate.trim();
+            const d = new Date(cleaned);
+            if (!isNaN(d.getTime())) return d.getTime();
+            return 0;
         }
 
         function getFlipPool() {
@@ -975,13 +980,12 @@ layout: null
             const all = [];
             results.forEach(r => {
                 r.items.forEach(item => {
-                    const parsed = parseDate(item.date);
                     all.push({
                         category: r.label,
                         title: item.title,
                         link: item.link,
-                        time: formatTime(item.date),
-                        rawTime: parsed ? parsed.getTime() : 0
+                        time: extractTime(item.date),
+                        rawTime: extractTimestamp(item.date)
                     });
                 });
             });
@@ -1035,9 +1039,6 @@ layout: null
                 .replace(/'/g, '&#39;');
         }
 
-        // ============================================
-        // LETTER FLICKER
-        // ============================================
         function startFlicker() {
             setInterval(() => {
                 const items = document.querySelectorAll('.roll-item:first-child');
@@ -1061,16 +1062,9 @@ layout: null
             }, 2000);
         }
 
-        // ============================================
-        // ROLLING ANIMATION — wider stagger + jitter
-        // Every row rolls once every 45s.
-        // Rows are staggered 6s apart + random jitter.
-        // ============================================
         function startRolling(initialRows) {
             setTimeout(() => {
                 for (let i = 0; i < initialRows.length; i++) {
-                    // Base stagger: 6 seconds apart
-                    // Plus random jitter between 0 and 3 seconds
                     const stagger = i * 6000 + Math.random() * 3000;
                     setTimeout(() => {
                         startRowRolling(i, initialRows[i]);
@@ -1104,7 +1098,6 @@ layout: null
 
             setTimeout(() => {
                 rollOnce();
-                // 45s interval + random jitter so rows never sync up
                 setInterval(rollOnce, 45000 + Math.random() * 5000);
             }, 45000);
         }
@@ -1141,6 +1134,6 @@ layout: null
             }, 600);
         }
     </script>
-
+    
 </body>
 </html>
