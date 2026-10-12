@@ -30,10 +30,10 @@ jobs:
           const feeds = [
             { name: 'world', url: 'https://www.thehindu.com/news/international/feeder/default.rss' },
             { name: 'india', url: 'https://www.thehindu.com/feeder/default.rss' },
-            { name: 'bangalore', url: 'https://www.deccanherald.com/rss/bangalore.rss' },
+            { name: 'bangalore', url: 'https://www.thehindu.com/news/cities/bangalore/feeder/default.rss' },
             { name: 'mumbai', url: 'https://indianexpress.com/section/cities/mumbai/feed/' },
             { name: 'delhi', url: 'https://indianexpress.com/section/cities/delhi/feed/' },
-            { name: 'up', url: 'https://www.jagran.com/rss/uttar-pradesh.xml' }
+            { name: 'up', url: 'https://www.abplive.com/news/states/up-uk/feed' }
           ];
           
           (async () => {
