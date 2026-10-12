@@ -84,41 +84,71 @@ layout: null
 
         .page-subtitle {
             text-align: center; color: #6a6760 !important;
-            margin-bottom: 50px; font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+            margin-bottom: 60px; font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+            font-style: italic;
         }
 
+        /* SONG CARD */
         .song {
-            background: rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(44, 42, 38, 0.1);
-            border-radius: 12px;
-            padding: clamp(22px, 4vw, 35px);
-            margin-bottom: 25px;
-            transition: transform 0.3s ease, background 0.3s ease;
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(44, 42, 38, 0.12);
+            border-radius: 16px;
+            padding: clamp(28px, 5vw, 45px) clamp(24px, 4vw, 40px);
+            margin-bottom: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
         }
-        .song:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.6); }
+        .song:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .song-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #a09a8d !important;
+            margin-bottom: 16px;
+        }
 
         .song h2 {
             font-family: 'Abril Fatface', cursive;
-            font-size: clamp(1.3rem, 4vw, 1.6rem);
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
             color: #1a1815 !important;
-            margin-bottom: 5px;
+            line-height: 1.05;
+            margin-bottom: 12px;
         }
 
         .song .artist {
+            display: inline-block;
             font-family: 'Poppins', sans-serif;
-            font-size: 0.8rem; color: #8a8781 !important;
-            text-transform: uppercase; letter-spacing: 1.5px;
-            margin-bottom: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #4a4741 !important;
+            background: rgba(44, 42, 38, 0.08);
+            padding: 6px 14px;
+            border-radius: 50px;
+            margin-bottom: 28px;
+        }
+
+        /* VIDEO + CUSTOM CONTROLS */
+        .player-block {
+            max-width: 480px;
+            margin: 0 auto 32px auto;
         }
 
         .song .video-wrapper {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%;
-            margin-bottom: 22px;
-            border-radius: 8px;
+            border-radius: 12px 12px 0 0;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+            background: #000;
+            aspect-ratio: 16 / 9;
         }
 
         .song .video-wrapper iframe {
@@ -128,9 +158,141 @@ layout: null
             border: 0;
         }
 
-        .song .body-text { font-size: clamp(0.95rem, 2.5vw, 1.05rem); }
-        .song .body-text p { margin-bottom: 15px; }
+        /* The play cover overlay */
+        .video-cover {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: opacity 0.4s ease;
+        }
 
+        .video-cover::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            transition: background 0.3s ease;
+        }
+
+        .video-cover:hover::before {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .video-cover.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .play-btn-big {
+            position: relative;
+            z-index: 2;
+            width: 72px;
+            height: 72px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+            transition: transform 0.3s ease;
+        }
+        .video-cover:hover .play-btn-big { transform: scale(1.1); }
+        .play-btn-big svg { width: 28px; height: 28px; fill: #1a1815; margin-left: 4px; }
+
+        /* ======================================== */
+        /* CUSTOM CONTROL BAR                       */
+        /* ======================================== */
+        .control-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(20px, 5vw, 40px);
+            background: #1a1815;
+            border-radius: 0 0 12px 12px;
+            padding: 16px 20px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            transition: opacity 0.3s ease;
+        }
+
+        .control-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.25s ease, transform 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .control-btn:hover {
+            background: rgba(252, 246, 232, 0.1);
+            transform: scale(1.05);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .control-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: #fcf6e8;
+            transition: fill 0.25s ease;
+        }
+
+        .control-btn.primary svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .control-btn .icon-pause { display: none; }
+        .control-btn.is-playing .icon-play { display: none; }
+        .control-btn.is-playing .icon-pause { display: block; }
+
+        /* When the video hasn't started yet, dim the control bar */
+        .control-bar.locked {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        /* WHY I LOVE IT */
+        .why-section {
+            margin-top: 28px;
+            padding-left: 20px;
+            border-left: 3px solid rgba(44, 42, 38, 0.25);
+        }
+
+        .why-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: #8a8781 !important;
+            margin-bottom: 12px;
+        }
+
+        .song .body-text {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: clamp(1rem, 2.6vw, 1.1rem);
+            color: #2c2a26 !important;
+            line-height: 1.75;
+        }
+        .song .body-text p { margin-bottom: 14px; }
+        .song .body-text p:last-child { margin-bottom: 0; }
+
+        /* Ad box */
         .ad-box {
             display: block;
             margin: 45px 0;
@@ -142,10 +304,7 @@ layout: null
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             -webkit-tap-highlight-color: transparent;
         }
-        .ad-box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
+        .ad-box:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
 
         .ad-tag {
             display: block;
@@ -158,15 +317,10 @@ layout: null
             margin-bottom: 12px;
         }
 
-        .ad-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+        .ad-row { display: flex; align-items: center; gap: 16px; }
 
         .ad-icon {
-            width: 52px;
-            height: 52px;
+            width: 52px; height: 52px;
             background: #2874f0;
             border-radius: 12px;
             display: flex;
@@ -223,21 +377,44 @@ layout: null
             line-height: 1.4;
         }
 
+        /* Empty state */
+        .empty-state {
+            background: rgba(44, 42, 38, 0.04);
+            border: 1px dashed rgba(44, 42, 38, 0.15);
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        .empty-state h2 {
+            font-family: 'Abril Fatface', cursive;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: #1a1815 !important;
+            margin-bottom: 12px;
+        }
+        .empty-state p {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 1rem;
+            color: #8a8781 !important;
+            font-style: italic;
+        }
+
+        /* Floating support */
         .support-btn {
             position: fixed; bottom: 20px; right: 20px;
             display: inline-flex; align-items: center; gap: 8px;
             padding: 14px 22px;
-            background: #ffffff !important; color: #000000 !important;
+            background: #2c2a26 !important; color: #fcf6e8 !important;
             font-family: 'Poppins', sans-serif;
             font-size: 0.85rem; font-weight: 600;
             border-radius: 50px;
-            box-shadow: 0 6px 20px rgba(255,255,255,0.25);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             z-index: 999;
             -webkit-tap-highlight-color: transparent;
         }
-        .support-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(255,255,255,0.4); color: #000000 !important; }
+        .support-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.35); color: #fcf6e8 !important; }
 
+        /* Footer */
         footer {
             background: #fcf6e8;
             padding: 45px 5vw 35px 5vw;
@@ -245,9 +422,7 @@ layout: null
             border-top: 1px solid rgba(44, 42, 38, 0.1);
             margin-top: 60px;
         }
-
         .footer-inner { max-width: 900px; margin: 0 auto; }
-
         .footer-logo {
             font-family: 'Abril Fatface', cursive;
             font-size: 1.5rem;
@@ -255,7 +430,6 @@ layout: null
             margin-bottom: 18px;
             display: block;
         }
-
         .footer-links {
             display: flex;
             justify-content: center;
@@ -264,7 +438,6 @@ layout: null
             flex-wrap: wrap;
             margin-bottom: 22px;
         }
-
         .footer-links a {
             color: #6a6760 !important;
             font-family: 'Poppins', sans-serif;
@@ -277,9 +450,7 @@ layout: null
             -webkit-tap-highlight-color: transparent;
         }
         .footer-links a:hover { color: #1a1815 !important; }
-
         .footer-links .divider-dot { color: #b0aca0; font-size: 0.8rem; }
-
         .footer-instagram {
             display: inline-flex;
             align-items: center;
@@ -296,7 +467,6 @@ layout: null
         }
         .footer-instagram:hover { color: #1a1815 !important; }
         .footer-instagram svg { width: 16px; height: 16px; flex-shrink: 0; }
-
         .footer-copyright {
             font-family: 'Josefin Sans', sans-serif;
             font-size: 0.75rem;
@@ -315,6 +485,13 @@ layout: null
             .ad-icon { width: 44px; height: 44px; font-size: 1.1rem; }
             .ad-row { gap: 14px; }
             .ad-cta { width: 100%; text-align: center; }
+            .song { padding: 24px 20px; }
+            .why-section { padding-left: 16px; }
+            .play-btn-big { width: 60px; height: 60px; }
+            .play-btn-big svg { width: 22px; height: 22px; }
+            .control-bar { gap: 20px; padding: 14px 16px; }
+            .control-btn svg { width: 20px; height: 20px; }
+            .control-btn.primary svg { width: 24px; height: 24px; }
         }
     </style>
 </head>
@@ -328,32 +505,51 @@ layout: null
 
         {% assign sorted_songs = site.songs | sort: "date" | reverse %}
         {% for song in sorted_songs %}
+        {% assign video_id = song.youtube | replace: 'https://www.youtube.com/watch?v=', '' | replace: 'https://youtu.be/', '' | split: '&' | first %}
         <div class="song">
+            <div class="song-label">Song Highlight</div>
             <h2>{{ song.title }}</h2>
-            <p class="artist">{{ song.artist }}</p>
+            <span class="artist">{{ song.artist }}</span>
 
             {% if song.youtube %}
-            <div class="video-wrapper">
-                <iframe 
-                    src="https://www.youtube.com/embed/{{ song.youtube | replace: 'https://www.youtube.com/watch?v=', '' | replace: 'https://youtu.be/', '' | split: '&' | first }}" 
-                    title="{{ song.title }}"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
-                </iframe>
+            <div class="player-block">
+                <div class="video-wrapper" id="player-{{ video_id }}" data-videoid="{{ video_id }}">
+                    <div class="video-cover" style="background-image: url('https://i.ytimg.com/vi/{{ video_id }}/hqdefault.jpg');">
+                        <div class="play-btn-big">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom control bar -->
+                <div class="control-bar locked" data-target="{{ video_id }}">
+                    <button class="control-btn" data-action="rewind" aria-label="Rewind">
+                        <svg viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
+                    </button>
+                    <button class="control-btn primary" data-action="toggle" aria-label="Play or pause">
+                        <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                    <button class="control-btn" data-action="forward" aria-label="Forward">
+                        <svg viewBox="0 0 24 24"><path d="M13 6v12l8.5-6L13 6zM4 18l8.5-6L4 6v12z"/></svg>
+                    </button>
+                </div>
             </div>
             {% endif %}
 
-            <div class="body-text">
-                {{ song.body | markdownify }}
+            <div class="why-section">
+                <div class="why-label">Why I love it</div>
+                <div class="body-text">
+                    {{ song.body | markdownify }}
+                </div>
             </div>
         </div>
         {% endfor %}
 
         {% if site.songs.size == 0 %}
-        <div class="song">
+        <div class="empty-state">
             <h2>No song highlights yet.</h2>
-            <p class="artist">Coming soon</p>
-            <p>I'll be sharing the songs I can't stop listening to. Check back soon.</p>
+            <p>Coming soon — the first one is on its way.</p>
         </div>
         {% endif %}
 
@@ -413,6 +609,94 @@ layout: null
     <a href="https://instagram.com/verv.reads" target="_blank" class="support-btn">
         ☕ Support the Writer
     </a>
+
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        // Store player instances keyed by video ID
+        const players = {};
+        const pendingPlayers = {};
+
+        // Called automatically by the YouTube IFrame API
+        window.onYouTubeIframeAPIReady = function() {
+            // Nothing to do here yet — players are created on demand
+        };
+
+        // Custom play cover click handlers
+        document.querySelectorAll('.video-cover').forEach(function(cover) {
+            cover.addEventListener('click', function() {
+                const wrapper = cover.parentElement;
+                const videoId = wrapper.getAttribute('data-videoid');
+                const controlBar = wrapper.parentElement.querySelector('.control-bar');
+
+                // Replace cover with actual YouTube iframe
+                wrapper.innerHTML = '<div id="yt-' + videoId + '"></div>';
+                wrapper.style.background = '#000';
+
+                // Create the YouTube player
+                const player = new YT.Player('yt-' + videoId, {
+                    videoId: videoId,
+                    playerVars: {
+                        autoplay: 1,
+                        controls: 0,       // Hide YouTube controls
+                        modestbranding: 1, // Reduce branding
+                        rel: 0,            // No related videos
+                        playsinline: 1,    // Play inline on mobile
+                        fs: 0              // Disable fullscreen button
+                    },
+                    events: {
+                        'onReady': function(event) {
+                            players[videoId] = event.target;
+                            // Unlock the control bar
+                            controlBar.classList.remove('locked');
+                            // Set initial playing state
+                            const toggleBtn = controlBar.querySelector('[data-action="toggle"]');
+                            if (toggleBtn) toggleBtn.classList.add('is-playing');
+                        },
+                        'onStateChange': function(event) {
+                            const toggleBtn = controlBar.querySelector('[data-action="toggle"]');
+                            if (!toggleBtn) return;
+                            if (event.data === YT.PlayerState.PLAYING) {
+                                toggleBtn.classList.add('is-playing');
+                            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                                toggleBtn.classList.remove('is-playing');
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        // Control bar button handlers
+        document.querySelectorAll('.control-bar').forEach(function(bar) {
+            const videoId = bar.getAttribute('data-target');
+
+            bar.querySelectorAll('.control-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const player = players[videoId];
+                    if (!player) return;
+
+                    const action = btn.getAttribute('data-action');
+                    const state = player.getPlayerState ? player.getPlayerState() : -1;
+
+                    if (action === 'toggle') {
+                        if (state === YT.PlayerState.PLAYING) {
+                            player.pauseVideo();
+                        } else {
+                            player.playVideo();
+                        }
+                    } else if (action === 'rewind') {
+                        const current = player.getCurrentTime();
+                        player.seekTo(Math.max(0, current - 10), true);
+                    } else if (action === 'forward') {
+                        const current = player.getCurrentTime();
+                        player.seekTo(current + 10, true);
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
