@@ -67,7 +67,7 @@ content:
         type: string
         required: true
       - name: youtube
-        label: YouTube Video ID (the code after v= or youtu.be/, before any ?)
+        label: YouTube Video ID (the code after v= or youtu.be/ — before any ?)
         type: string
         required: true
       - name: body
