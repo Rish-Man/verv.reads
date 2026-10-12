@@ -23,7 +23,7 @@ layout: null
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;800&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;800&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -135,83 +135,8 @@ layout: null
             color: #999 !important; margin-top: 20px; line-height: 1.6;
         }
 
-        .news-section {
-            margin-top: 40px;
-            padding: clamp(22px, 4vw, 35px) clamp(20px, 4vw, 40px);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-        }
-
-        .news-label {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            color: #999 !important;
-            margin-bottom: 16px;
-        }
-
-        .news-feed { display: flex; flex-direction: column; gap: 2px; }
-
-        .news-item {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: border-color 0.3s ease;
-        }
-
-        .news-item:last-child { border-bottom: none; }
-        .news-item:hover { border-bottom-color: rgba(255, 255, 255, 0.15); }
-
-        .news-source {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.62rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #666 !important;
-            flex-shrink: 0;
-            min-width: 75px;
-        }
-
-        .news-title {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: clamp(0.85rem, 2.2vw, 0.95rem);
-            color: #d1d1d1 !important;
-            line-height: 1.4;
-            transition: color 0.3s ease;
-        }
-
-        .news-item:hover .news-title { color: #ffffff !important; }
-
-        .news-loading {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: 0.9rem;
-            color: #666 !important;
-            text-align: center;
-            font-style: italic;
-            padding: 15px 0;
-        }
-
-        .news-more {
-            display: inline-block;
-            margin-top: 14px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #999 !important;
-            transition: color 0.3s ease;
-        }
-        .news-more:hover { color: #ffffff !important; }
-
         .joke-of-day {
-            margin-top: 30px;
+            margin-top: 40px;
             padding: clamp(24px, 4vw, 45px) clamp(20px, 4vw, 50px);
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -267,20 +192,6 @@ layout: null
             font-weight: 600;
         }
 
-        .joke-of-day .joke-invite {
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: clamp(0.95rem, 2.6vw, 1.2rem);
-            color: #d1d1d1 !important;
-            line-height: 1.6;
-        }
-
-        .joke-of-day .joke-invite a {
-            color: #ffffff !important;
-            text-decoration: underline;
-            text-underline-offset: 3px;
-            font-weight: 600;
-        }
-
         .cta-row {
             display: flex;
             gap: 15px;
@@ -328,7 +239,7 @@ layout: null
 
         .newsletter-section {
             background: var(--bg-dark);
-            padding: clamp(50px, 8vw, 80px) 5vw clamp(70px, 10vw, 100px) 5vw;
+            padding: clamp(50px, 8vw, 80px) 5vw clamp(40px, 6vw, 60px) 5vw;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
@@ -372,6 +283,246 @@ layout: null
             box-shadow: 0 8px 25px rgba(255,255,255,0.3);
             background-color: #f0f0f0 !important;
             color: #000000 !important;
+        }
+
+        /* ============================================ */
+        /* AIRPORT DEPARTURE BOARD NEWS                 */
+        /* ============================================ */
+        .board-section {
+            background: var(--bg-dark);
+            padding: 60px 5vw 80px 5vw;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .board-wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            position: relative;
+        }
+
+        /* Top metallic edge — makes it feel like a physical board */
+        .board-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(to right,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.4) 50%,
+                rgba(255,255,255,0) 100%);
+            z-index: 3;
+        }
+
+        .board-header {
+            background: linear-gradient(to bottom, #2a7fbf 0%, #1f6fa8 100%);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .board-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0; right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .board-title {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ffffff !important;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        .board-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
+
+        .board-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 8px #4ade80;
+            animation: liveDot 2s ease-in-out infinite;
+        }
+
+        @keyframes liveDot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px #4ade80; }
+            50% { opacity: 0.5; box-shadow: 0 0 3px #4ade80; }
+        }
+
+        .board-body {
+            background: linear-gradient(to bottom, #1a3a8f 0%, #142d70 100%);
+            padding: 0;
+            position: relative;
+        }
+
+        /* Subtle screen scanlines */
+        .board-body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255,255,255,0.015) 0px,
+                rgba(255,255,255,0.015) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Top glow — like a lit screen */
+        .board-body::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            background: linear-gradient(to bottom,
+                rgba(255,255,255,0.06) 0%,
+                rgba(255,255,255,0) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .board-row {
+            display: grid;
+            grid-template-columns: 110px 1fr 70px;
+            gap: 16px;
+            align-items: center;
+            padding: 11px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
+            z-index: 2;
+            transition: background 0.3s ease;
+        }
+
+        .board-row:last-child { border-bottom: none; }
+
+        .board-row:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .board-row.category {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #7dd3fc !important;
+            text-shadow: 0 0 6px rgba(125, 211, 252, 0.3);
+        }
+
+        .board-row.headline {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 400;
+            color: #ffffff !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+        }
+
+        .board-row.time {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.72rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7) !important;
+            text-align: right;
+        }
+
+        /* The link wrapper — makes the whole row clickable */
+        .board-link {
+            display: contents;
+            color: inherit;
+        }
+
+        .board-link:hover .board-row.headline { color: #ffffff !important; }
+        .board-link:hover .board-row.category { color: #a8e6ff !important; }
+        .board-link:hover .board-row.time { color: rgba(255,255,255,0.9) !important; }
+
+        /* The flicker animation — one letter dims briefly */
+        .flicker {
+            animation: flicker 0.15s ease-in-out;
+        }
+
+        @keyframes flicker {
+            0% { color: #ffffff; text-shadow: none; }
+            50% { color: #666666; text-shadow: none; }
+            100% { color: #ffffff; text-shadow: none; }
+        }
+
+        .board-footer {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 10px 24px;
+            text-align: center;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .board-loading {
+            padding: 40px 24px;
+            text-align: center;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.6) !important;
+            text-transform: uppercase;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .board-row {
+                grid-template-columns: 1fr;
+                gap: 4px;
+                padding: 12px 18px;
+                align-items: flex-start;
+            }
+            .board-row.time {
+                text-align: left;
+                font-size: 0.68rem;
+                color: rgba(255, 255, 255, 0.5) !important;
+            }
+            .board-row.category { font-size: 0.68rem; }
+            .board-row.headline {
+                font-size: 0.85rem;
+                white-space: normal;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .board-header { padding: 12px 18px; }
+            .board-title { font-size: 0.8rem; letter-spacing: 2px; }
+            .board-status { font-size: 0.6rem; gap: 8px; }
         }
 
         .affiliate-section {
@@ -536,9 +687,6 @@ layout: null
             .newsletter-btn { width: 100%; padding: 18px 24px; }
             .affiliate-btn { width: 100%; padding: 18px 24px; }
 
-            .news-item { flex-direction: column; gap: 4px; }
-            .news-source { min-width: auto; }
-
             footer { padding: 40px 5vw 30px 5vw; }
             .footer-links { flex-direction: column; gap: 4px; }
             .footer-links .divider-dot { display: none; }
@@ -595,14 +743,6 @@ layout: null
                 <p class="personal-note">No gatekeeping here. Oh btw, I am also not a great writer. It's just something I do for passing time.</p>
             </div>
 
-            <div class="news-section">
-                <div class="news-label">From around the web</div>
-                <div id="news-feed" class="news-feed">
-                    <p class="news-loading">Loading headlines...</p>
-                </div>
-                <a href="news.html" class="news-more">See all headlines →</a>
-            </div>
-
             {% assign latest_joke = site.jokes | sort: "date" | reverse | first %}
 
             <div class="joke-of-day">
@@ -641,6 +781,25 @@ layout: null
             <a href="https://ig.me/m/verv.reads?text=Hey!%20I%20want%20to%20subscribe%20to%20Verv!" target="_blank" class="newsletter-btn">
                 Subscribe via Instagram DM →
             </a>
+        </div>
+    </section>
+
+    <!-- AIRPORT DEPARTURE BOARD NEWS -->
+    <section class="board-section">
+        <div class="board-wrapper">
+            <div class="board-header">
+                <div class="board-title">News</div>
+                <div class="board-status">
+                    <span class="board-status-dot"></span>
+                    <span>Live · Updated <span id="board-updated">—</span></span>
+                </div>
+            </div>
+            <div class="board-body" id="board-body">
+                <div class="board-loading">Loading headlines...</div>
+            </div>
+            <div class="board-footer">
+                Aggregated from The Hindu · Indian Express · ABP Live · Updated every 6 hours
+            </div>
         </div>
     </section>
 
@@ -719,33 +878,125 @@ layout: null
             }, 650); 
         });
 
-        fetch('news.json')
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('news-feed');
-                let items = [];
-                if (data && data.items && data.items.length > 0) {
-                    items = data.items;
-                } else if (Array.isArray(data) && data.length > 0) {
-                    data.forEach(feed => {
-                        if (feed.items) items = items.concat(feed.items);
-                    });
-                }
+        // ============================================
+        // AIRPORT DEPARTURE BOARD
+        // ============================================
+        const CATEGORIES = [
+            { file: 'news-world.json', label: 'WORLD' },
+            { file: 'news-india.json', label: 'INDIA' },
+            { file: 'news-bangalore.json', label: 'BENGALURU' },
+            { file: 'news-mumbai.json', label: 'MUMBAI' },
+            { file: 'news-delhi.json', label: 'DELHI' },
+            { file: 'news-up.json', label: 'UP' }
+        ];
 
-                if (items.length > 0) {
-                    container.innerHTML = items.slice(0, 5).map(item => `
-                        <a href="${item.link}" target="_blank" rel="noopener" class="news-item">
-                            <span class="news-source">The Hindu</span>
-                            <span class="news-title">${item.title}</span>
-                        </a>
-                    `).join('');
-                } else {
-                    container.innerHTML = '<p class="news-loading">Check back soon for headlines.</p>';
-                }
-            })
-            .catch(() => {
-                document.getElementById('news-feed').innerHTML = '<p class="news-loading">Check back soon for headlines.</p>';
+        function formatTime(dateStr) {
+            if (!dateStr) return '—';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return '—';
+            const hh = String(d.getHours()).padStart(2, '0');
+            const mm = String(d.getMinutes()).padStart(2, '0');
+            return hh + ':' + mm;
+        }
+
+        Promise.all(CATEGORIES.map(cat =>
+            fetch(cat.file)
+                .then(r => r.json())
+                .then(data => ({ label: cat.label, items: data.items || [] }))
+                .catch(() => ({ label: cat.label, items: [] }))
+        )).then(results => {
+            // Build a mixed list — take the newest item from each category first,
+            // then fill up to 10 rows with the next newest across all.
+            const all = [];
+            results.forEach(r => {
+                r.items.forEach(item => {
+                    all.push({
+                        category: r.label,
+                        title: item.title,
+                        link: item.link,
+                        time: formatTime(item.date),
+                        rawTime: item.date ? new Date(item.date).getTime() : 0
+                    });
+                });
             });
+
+            // Sort newest first
+            all.sort((a, b) => b.rawTime - a.rawTime);
+
+            // Take top 10
+            const rows = all.slice(0, 10);
+
+            const container = document.getElementById('board-body');
+
+            if (rows.length === 0) {
+                container.innerHTML = '<div class="board-loading">No headlines available</div>';
+                return;
+            }
+
+            container.innerHTML = rows.map((row, idx) => `
+                <a href="${row.link}" target="_blank" rel="noopener" class="board-link">
+                    <div class="board-row">
+                        <div class="board-row category">${row.category}</div>
+                        <div class="board-row headline">${escapeHtml(row.title)}</div>
+                        <div class="board-row time">${row.time}</div>
+                    </div>
+                </a>
+            `).join('');
+
+            // Update the "Updated X minutes ago" text using the newest item
+            if (rows[0] && rows[0].rawTime) {
+                const minsAgo = Math.floor((Date.now() - rows[0].rawTime) / 60000);
+                const updatedEl = document.getElementById('board-updated');
+                if (minsAgo < 1) updatedEl.textContent = 'just now';
+                else if (minsAgo < 60) updatedEl.textContent = minsAgo + 'm ago';
+                else updatedEl.textContent = Math.floor(minsAgo / 60) + 'h ago';
+            }
+
+            // Start the subtle flicker
+            startFlicker();
+        });
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // ============================================
+        // SUBTLE LETTER FLICKER
+        // One letter dims for a split-second, then back
+        // ============================================
+        function startFlicker() {
+            const headlineEls = document.querySelectorAll('.board-row.headline');
+
+            setInterval(() => {
+                if (headlineEls.length === 0) return;
+
+                // Pick a random row
+                const row = headlineEls[Math.floor(Math.random() * headlineEls.length)];
+                const text = row.textContent;
+                if (!text || text.length < 3) return;
+
+                // Pick a random letter position (avoid very start/end)
+                const pos = 1 + Math.floor(Math.random() * (text.length - 2));
+                const char = text[pos];
+                if (char === ' ') return; // skip spaces
+
+                // Split the text, wrap the letter in a flicker span
+                row.innerHTML = escapeHtml(text.slice(0, pos)) +
+                                '<span class="flicker">' + escapeHtml(char) + '</span>' +
+                                escapeHtml(text.slice(pos + 1));
+
+                // Remove the flicker span after the animation
+                setTimeout(() => {
+                    row.textContent = text;
+                }, 200);
+            }, 3500);
+        }
     </script>
 
 </body>
