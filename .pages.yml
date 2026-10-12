@@ -67,15 +67,14 @@ content:
         type: string
         required: true
       - name: youtube
-        label: YouTube link (paste the full URL)
+        label: YouTube Video ID (the code after v= or youtu.be/, before any ?)
         type: string
         required: true
       - name: body
         label: Why I love it
-        type: rich-text
+        type: text
         required: true
       - name: date
         label: Date (use format YYYY-MM-DD, e.g. 2026-10-10)
         type: string
         required: true
-      
