@@ -25,15 +25,20 @@ jobs:
           node -e "
           const Parser = require('rss-parser');
           const fs = require('fs');
-          const parser = new Parser();
+          const parser = new Parser({
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (compatible; VervNews/1.0)',
+              'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+            }
+          });
           
           const feeds = [
             { name: 'world', url: 'https://www.thehindu.com/news/international/feeder/default.rss' },
             { name: 'india', url: 'https://www.thehindu.com/feeder/default.rss' },
             { name: 'bangalore', url: 'https://www.thehindu.com/news/cities/bangalore/feeder/default.rss' },
-            { name: 'mumbai', url: 'https://indianexpress.com/section/cities/mumbai/feed/' },
-            { name: 'delhi', url: 'https://indianexpress.com/section/cities/delhi/feed/' },
-            { name: 'up', url: 'https://www.abplive.com/news/states/up-uk/feed' }
+            { name: 'mumbai', url: 'https://www.thehindu.com/news/cities/mumbai/feeder/default.rss' },
+            { name: 'delhi', url: 'https://www.thehindu.com/news/cities/Delhi/feeder/default.rss' },
+            { name: 'up', url: 'https://www.hindustantimes.com/feeds/rss/cities/lucknow/rssfeed.xml' }
           ];
           
           (async () => {
@@ -43,8 +48,7 @@ jobs:
                 const items = parsed.items.slice(0, 8).map(item => ({
                   title: item.title,
                   link: item.link,
-                  date: item.pubDate,
-                  image: item.enclosure?.url || null
+                  date: item.pubDate || item.isoDate || item.date || null
                 }));
                 fs.writeFileSync('news-' + feed.name + '.json', JSON.stringify({ source: feed.name, items }, null, 2));
                 console.log('Saved ' + items.length + ' items for ' + feed.name);
