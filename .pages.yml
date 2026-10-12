@@ -78,3 +78,38 @@ content:
         label: Date (use format YYYY-MM-DD, e.g. 2026-10-10)
         type: string
         required: true
+
+  - name: food
+    label: The Eats
+    type: collection
+    path: _food
+    filename: "{primary}.md"
+    view:
+      fields: [name]
+    fields:
+      - name: name
+        label: Dish name
+        type: string
+        required: true
+      - name: image
+        label: Dish photo URL (paste a full URL ending in .jpg / .png / .webp)
+        type: string
+        required: true
+      - name: alt_names
+        label: Also known as (comma separated)
+        type: string
+      - name: about
+        label: About this dish
+        type: text
+        required: true
+      - name: recipe_url
+        label: Recipe link (full URL)
+        type: string
+        required: true
+      - name: recipe_source
+        label: Recipe source (e.g. "BBC Good Food", "My grandmother")
+        type: string
+      - name: date
+        label: Date (use format YYYY-MM-DD, e.g. 2026-10-10)
+        type: string
+        required: true
