@@ -455,14 +455,24 @@ layout: null
             text-shadow: 0 0 6px rgba(125, 211, 252, 0.35);
         }
 
-        /* Headline container for the flip animation */
-        .board-row.headline-wrap {
+        /* ============================== */
+        /* ROLLING HEADLINE WINDOW         */
+        /* ============================== */
+        .roll-window {
             position: relative;
             height: 1.3em;
             overflow: hidden;
         }
 
-        .board-row.headline {
+        .roll-stack {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .roll-item {
             font-family: 'Josefin Sans', sans-serif;
             font-size: 0.88rem;
             font-weight: 400;
@@ -471,18 +481,8 @@ layout: null
             overflow: hidden;
             text-overflow: ellipsis;
             line-height: 1.3;
+            height: 1.3em;
             text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
-            transition: transform 0.4s cubic-bezier(0.6, 0, 0.3, 1), opacity 0.4s ease;
-        }
-
-        .board-row.headline.flipping-out {
-            transform: translateY(-100%);
-            opacity: 0;
-        }
-
-        .board-row.headline.flipping-in {
-            transform: translateY(100%);
-            opacity: 0;
         }
 
         .board-row.time {
@@ -499,7 +499,7 @@ layout: null
             color: inherit;
         }
 
-        .board-link:hover .board-row.headline { color: #ffffff !important; }
+        .board-link:hover .roll-item { color: #ffffff !important; }
         .board-link:hover .board-row.category { color: #a8e6ff !important; }
         .board-link:hover .board-row.time { color: rgba(255,255,255,0.9) !important; }
 
@@ -542,22 +542,24 @@ layout: null
                 padding: 12px 18px;
                 align-items: flex-start;
             }
-            .board-row.headline-wrap { height: auto; }
+            .roll-window { height: auto; overflow: visible; }
+            .roll-stack { position: relative; transform: none !important; }
+            .roll-item {
+                font-size: 0.85rem;
+                white-space: normal;
+                height: auto;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .roll-item:nth-child(2) { display: none; }
             .board-row.time {
                 text-align: left;
                 font-size: 0.68rem;
                 color: rgba(255, 255, 255, 0.5) !important;
             }
             .board-row.category { font-size: 0.68rem; }
-            .board-row.headline {
-                font-size: 0.85rem;
-                white-space: normal;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                height: auto;
-            }
             .board-header { padding: 12px 18px; }
             .board-title { font-size: 0.8rem; letter-spacing: 2px; }
             .board-status { font-size: 0.6rem; gap: 8px; }
@@ -932,7 +934,6 @@ layout: null
             { file: 'news-up.json', label: 'UP' }
         ];
 
-        // Global pool of all items
         let allItems = [];
 
         function parseDate(dateStr) {
@@ -941,9 +942,7 @@ layout: null
                 const d = new Date(dateStr);
                 if (isNaN(d.getTime())) return null;
                 return d;
-            } catch (e) {
-                return null;
-            }
+            } catch (e) { return null; }
         }
 
         function formatTime(dateStr) {
@@ -954,32 +953,12 @@ layout: null
             return hh + ':' + mm;
         }
 
-        function relativeTime(dateStr) {
-            const d = parseDate(dateStr);
-            if (!d) return '';
-            const minsAgo = Math.floor((Date.now() - d.getTime()) / 60000);
-            if (minsAgo < 1) return 'now';
-            if (minsAgo < 60) return minsAgo + 'm';
-            if (minsAgo < 1440) return Math.floor(minsAgo / 60) + 'h';
-            return Math.floor(minsAgo / 1440) + 'd';
-        }
-
-        // Pick items from the last N hours; if too few, expand the window
-        function pickRecentItems(hoursWindow) {
-            const cutoff = Date.now() - (hoursWindow * 60 * 60 * 1000);
-            return allItems.filter(item => item.rawTime > cutoff);
-        }
-
         function getFlipPool() {
-            // Try 24h first
-            let pool = pickRecentItems(24);
+            const now = Date.now();
+            let pool = allItems.filter(i => i.rawTime > now - 24 * 60 * 60 * 1000);
             if (pool.length >= 10) return pool;
-
-            // Then 7 days
-            pool = pickRecentItems(24 * 7);
+            pool = allItems.filter(i => i.rawTime > now - 7 * 24 * 60 * 60 * 1000);
             if (pool.length >= 10) return pool;
-
-            // Then everything
             return allItems;
         }
 
@@ -998,15 +977,12 @@ layout: null
                         title: item.title,
                         link: item.link,
                         time: formatTime(item.date),
-                        relative: relativeTime(item.date),
                         rawTime: parsed ? parsed.getTime() : 0
                     });
                 });
             });
 
             allItems = all;
-
-            // Sort newest first for initial display
             all.sort((a, b) => b.rawTime - a.rawTime);
 
             const rows = all.slice(0, 10);
@@ -1021,10 +997,12 @@ layout: null
                 <a href="${row.link}" target="_blank" rel="noopener" class="board-link" data-row-index="${idx}">
                     <div class="board-row">
                         <div class="board-row category" data-category="${idx}">${row.category}</div>
-                        <div class="board-row headline-wrap">
-                            <div class="board-row headline" data-headline="${idx}">${escapeHtml(row.title)}</div>
+                        <div class="roll-window" data-window="${idx}">
+                            <div class="roll-stack" data-stack="${idx}">
+                                <div class="roll-item">${escapeHtml(row.title)}</div>
+                            </div>
                         </div>
-                        <div class="board-row time" data-time="${idx}">${row.time || row.relative || '--:--'}</div>
+                        <div class="board-row time" data-time="${idx}">${row.time}</div>
                     </div>
                 </a>
             `).join('');
@@ -1040,7 +1018,7 @@ layout: null
             }
 
             startFlicker();
-            startFlipping(rows);
+            startRolling(rows);
         });
 
         function escapeHtml(str) {
@@ -1054,56 +1032,57 @@ layout: null
         }
 
         // ============================================
-        // SUBTLE LETTER FLICKER
+        // LETTER FLICKER
         // ============================================
         function startFlicker() {
             setInterval(() => {
-                const headlineEls = document.querySelectorAll('.board-row.headline');
-                if (headlineEls.length === 0) return;
+                const items = document.querySelectorAll('.roll-item:first-child');
+                if (items.length === 0) return;
 
-                const row = headlineEls[Math.floor(Math.random() * headlineEls.length)];
-                const text = row.textContent;
+                const el = items[Math.floor(Math.random() * items.length)];
+                const text = el.textContent;
                 if (!text || text.length < 3) return;
 
                 const pos = 1 + Math.floor(Math.random() * (text.length - 2));
                 const char = text[pos];
                 if (char === ' ') return;
 
-                row.innerHTML = escapeHtml(text.slice(0, pos)) +
+                el.innerHTML = escapeHtml(text.slice(0, pos)) +
                                 '<span class="flicker">' + escapeHtml(char) + '</span>' +
                                 escapeHtml(text.slice(pos + 1));
 
                 setTimeout(() => {
-                    row.textContent = text;
+                    el.textContent = text;
                 }, 280);
             }, 2000);
         }
 
         // ============================================
-        // FLIP ONE ROW EVERY 45 SECONDS
-        // Each row flips independently — staggered
+        // ROLLING ANIMATION (like a combination lock)
+        // Each row rolls independently, staggered.
         // ============================================
-        function startFlipping(initialRows) {
-            // Wait 5 seconds before starting any flips
+        function startRolling(initialRows) {
+            // Wait 5s before starting, then stagger rows 4s apart
             setTimeout(() => {
-                // Stagger initial flip times: rows start flipping at 0s, 4s, 8s, 12s... offsets
                 for (let i = 0; i < initialRows.length; i++) {
                     const stagger = i * 4000;
                     setTimeout(() => {
-                        scheduleRowFlips(i, initialRows[i]);
+                        startRowRolling(i, initialRows[i]);
                     }, stagger);
                 }
             }, 5000);
         }
 
-        function scheduleRowFlips(rowIndex, currentRow) {
-            const flipOnce = () => {
+        function startRowRolling(rowIndex, initialRow) {
+            let currentRow = initialRow;
+
+            const rollOnce = () => {
                 const pool = getFlipPool();
                 if (pool.length === 0) return;
 
-                // Pick a random item from the pool that ISN'T the current headline
-                let attempts = 0;
+                // Pick a different headline
                 let nextItem = null;
+                let attempts = 0;
                 while (attempts < 20) {
                     const candidate = pool[Math.floor(Math.random() * pool.length)];
                     if (candidate.title !== currentRow.title) {
@@ -1112,51 +1091,55 @@ layout: null
                     }
                     attempts++;
                 }
-
                 if (!nextItem) return;
 
-                performFlip(rowIndex, nextItem, currentRow);
-
-                // Update currentRow reference for next time
+                performRoll(rowIndex, nextItem);
                 currentRow = nextItem;
             };
 
-            // First flip
+            // First roll happens 45 seconds after startRowRolling is called
             setTimeout(() => {
-                flipOnce();
-                // Then flip again 45 seconds later, and keep going
-                setInterval(flipOnce, 45000);
+                rollOnce();
+                setInterval(rollOnce, 45000);
             }, 45000);
         }
 
-        function performFlip(rowIndex, nextItem, prevItem) {
-            const headlineEl = document.querySelector(`[data-headline="${rowIndex}"]`);
+        function performRoll(rowIndex, nextItem) {
+            const stackEl = document.querySelector(`[data-stack="${rowIndex}"]`);
             const categoryEl = document.querySelector(`[data-category="${rowIndex}"]`);
             const timeEl = document.querySelector(`[data-time="${rowIndex}"]`);
             const linkEl = document.querySelector(`[data-row-index="${rowIndex}"]`);
 
-            if (!headlineEl || !linkEl) return;
+            if (!stackEl || !linkEl) return;
 
-            // 1. Slide out the current headline
-            headlineEl.classList.add('flipping-out');
+            // Add the new headline BELOW the current one
+            const newItem = document.createElement('div');
+            newItem.className = 'roll-item';
+            newItem.textContent = nextItem.title;
+            stackEl.appendChild(newItem);
 
-            // 2. After slide-out, swap content and slide in
+            // Give the browser a frame to render
+            requestAnimationFrame(() => {
+                // Roll the stack up by one row-height
+                stackEl.style.transform = 'translateY(-1.3em)';
+            });
+
+            // Update category, time, and link after the roll finishes
             setTimeout(() => {
-                headlineEl.textContent = nextItem.title;
-                headlineEl.classList.remove('flipping-out');
-                headlineEl.classList.add('flipping-in');
-
-                // Also update category and time
                 if (categoryEl) categoryEl.textContent = nextItem.category;
-                if (timeEl) timeEl.textContent = nextItem.time || nextItem.relative || '--:--';
-
-                // Update the link href so clicking goes to the new article
+                if (timeEl) timeEl.textContent = nextItem.time;
                 linkEl.href = nextItem.link;
 
-                // Force reflow, then remove flipping-in
-                void headlineEl.offsetWidth;
-                headlineEl.classList.remove('flipping-in');
-            }, 420);
+                // Clean up — remove the old top item, reset the transform
+                const firstChild = stackEl.firstElementChild;
+                if (firstChild) firstChild.remove();
+                stackEl.style.transition = 'none';
+                stackEl.style.transform = 'translateY(0)';
+                // Restore the transition on next frame
+                requestAnimationFrame(() => {
+                    stackEl.style.transition = '';
+                });
+            }, 600);
         }
     </script>
 
