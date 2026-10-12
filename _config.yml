@@ -12,3 +12,5 @@ collections:
     output: false
   songs:
     output: false
+  food:
+    output: false
