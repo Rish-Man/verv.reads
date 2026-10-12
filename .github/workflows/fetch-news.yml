@@ -1,4 +1,4 @@
-name: Fetch News from The Hindu
+name: Fetch News Feeds
 on:
   schedule:
     - cron: '0 */6 * * *'
@@ -19,33 +19,45 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Fetch RSS and save to JSON
+      - name: Fetch RSS feeds and save to JSON
         run: |
           npm install rss-parser
           node -e "
           const Parser = require('rss-parser');
           const fs = require('fs');
           const parser = new Parser();
+          
+          const feeds = [
+            { name: 'world', url: 'https://www.thehindu.com/news/international/feeder/default.rss' },
+            { name: 'india', url: 'https://www.thehindu.com/feeder/default.rss' },
+            { name: 'bangalore', url: 'https://www.deccanherald.com/rss/bangalore.rss' },
+            { name: 'mumbai', url: 'https://indianexpress.com/section/cities/mumbai/feed/' },
+            { name: 'delhi', url: 'https://indianexpress.com/section/cities/delhi/feed/' },
+            { name: 'up', url: 'https://www.jagran.com/rss/uttar-pradesh.xml' }
+          ];
+          
           (async () => {
-            try {
-              const feed = await parser.parseURL('https://www.thehindu.com/feeder/default.rss');
-              const items = feed.items.slice(0, 8).map(item => ({
-                title: item.title,
-                link: item.link,
-                date: item.pubDate
-              }));
-              fs.writeFileSync('news.json', JSON.stringify({ source: 'The Hindu', items }, null, 2));
-              console.log('Saved ' + items.length + ' items');
-            } catch (err) {
-              console.error('Error:', err.message);
-              fs.writeFileSync('news.json', JSON.stringify({ source: 'The Hindu', items: [] }));
-              process.exit(0);
+            for (const feed of feeds) {
+              try {
+                const parsed = await parser.parseURL(feed.url);
+                const items = parsed.items.slice(0, 8).map(item => ({
+                  title: item.title,
+                  link: item.link,
+                  date: item.pubDate,
+                  image: item.enclosure?.url || null
+                }));
+                fs.writeFileSync('news-' + feed.name + '.json', JSON.stringify({ source: feed.name, items }, null, 2));
+                console.log('Saved ' + items.length + ' items for ' + feed.name);
+              } catch (err) {
+                console.error('Error fetching ' + feed.name + ':', err.message);
+                fs.writeFileSync('news-' + feed.name + '.json', JSON.stringify({ source: feed.name, items: [] }));
+              }
             }
           })();
           "
 
-      - name: Commit news.json
+      - name: Commit news files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Auto-update news"
-          file_pattern: news.json
+          commit_message: "Auto-update news feeds"
+          file_pattern: "news-*.json"
