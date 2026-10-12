@@ -426,20 +426,23 @@ layout: null
             z-index: 3;
         }
 
-        .board-row {
+        /* THE ROW — now the anchor itself is the grid */
+        .board-link {
             display: grid;
-            grid-template-columns: 110px 1fr 70px;
+            grid-template-columns: 110px 1fr 80px;
             gap: 16px;
             align-items: center;
-            padding: 11px 24px;
+            padding: 12px 24px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: inherit;
             transition: background 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .board-row:last-child { border-bottom: none; }
-        .board-row:hover { background: rgba(255, 255, 255, 0.04); }
+        .board-link:last-child { border-bottom: none; }
+        .board-link:hover { background: rgba(255, 255, 255, 0.04); }
 
-        .board-row.category {
+        .board-category {
             font-family: 'JetBrains Mono', 'Courier New', monospace;
             font-size: 0.72rem;
             font-weight: 500;
@@ -448,6 +451,8 @@ layout: null
             color: #7dd3fc !important;
             text-shadow: 0 0 6px rgba(125, 211, 252, 0.35);
         }
+
+        .board-link:hover .board-category { color: #a8e6ff !important; }
 
         .roll-window {
             position: relative;
@@ -465,7 +470,7 @@ layout: null
 
         .roll-item {
             font-family: 'Josefin Sans', sans-serif;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             font-weight: 400;
             color: #ffffff !important;
             white-space: nowrap;
@@ -476,7 +481,9 @@ layout: null
             text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
         }
 
-        .board-row.time {
+        .board-link:hover .roll-item { color: #ffffff !important; }
+
+        .board-time {
             font-family: 'JetBrains Mono', 'Courier New', monospace;
             font-size: 0.72rem;
             font-weight: 400;
@@ -485,14 +492,7 @@ layout: null
             text-align: right;
         }
 
-        .board-link {
-            display: contents;
-            color: inherit;
-        }
-
-        .board-link:hover .roll-item { color: #ffffff !important; }
-        .board-link:hover .board-row.category { color: #a8e6ff !important; }
-        .board-link:hover .board-row.time { color: rgba(255,255,255,0.9) !important; }
+        .board-link:hover .board-time { color: rgba(255,255,255,0.95) !important; }
 
         .flicker { animation: flicker 0.25s ease-in-out; }
 
@@ -525,11 +525,10 @@ layout: null
         }
 
         @media (max-width: 768px) {
-            .board-row {
+            .board-link {
                 grid-template-columns: 1fr;
                 gap: 4px;
                 padding: 12px 18px;
-                align-items: flex-start;
             }
             .roll-window { height: auto; overflow: visible; }
             .roll-stack { position: relative; transform: none !important; }
@@ -543,12 +542,12 @@ layout: null
                 overflow: hidden;
             }
             .roll-item:nth-child(2) { display: none; }
-            .board-row.time {
+            .board-time {
                 text-align: left;
                 font-size: 0.68rem;
                 color: rgba(255, 255, 255, 0.5) !important;
             }
-            .board-row.category { font-size: 0.68rem; }
+            .board-category { font-size: 0.68rem; }
             .board-header { padding: 12px 18px; }
             .board-title { font-size: 0.8rem; letter-spacing: 2px; }
             .board-status { font-size: 0.6rem; gap: 8px; }
@@ -830,7 +829,7 @@ layout: null
                 </div>
             </div>
             <div class="board-footer">
-                Aggregated from The Hindu · Hindustan Times · Updated every 6 hours
+                Aggregated from The Hindu · Updated every 6 hours
             </div>
         </div>
     </section>
@@ -910,9 +909,6 @@ layout: null
             }, 650); 
         });
 
-        // ============================================
-        // AIRPORT DEPARTURE BOARD
-        // ============================================
         const CATEGORIES = [
             { file: 'news-world.json', label: 'WORLD' },
             { file: 'news-india.json', label: 'INDIA' },
@@ -924,36 +920,25 @@ layout: null
 
         let allItems = [];
 
-        // Bulletproof time extractor
-        // Tries three approaches and always returns something useful
         function extractTime(rawDate) {
             if (!rawDate || typeof rawDate !== 'string') return '--:--';
-
             const cleaned = rawDate.trim();
             if (!cleaned) return '--:--';
-
-            // Approach 1: regex directly on the string — most reliable across all browsers
-            // Matches "HH:MM" in patterns like "Mon, 12 Oct 2026 21:06:48 +0530"
             const timeMatch = cleaned.match(/(\d{1,2}):(\d{2}):\d{2}/);
             if (timeMatch) {
                 const hh = String(timeMatch[1]).padStart(2, '0');
                 const mm = String(timeMatch[2]).padStart(2, '0');
                 return hh + ':' + mm;
             }
-
-            // Approach 2: try Date parsing (for ISO format)
             const d = new Date(cleaned);
             if (!isNaN(d.getTime())) {
                 const hh = String(d.getHours()).padStart(2, '0');
                 const mm = String(d.getMinutes()).padStart(2, '0');
                 return hh + ':' + mm;
             }
-
-            // Approach 3: nothing worked
             return '--:--';
         }
 
-        // For sorting purposes — get a numeric timestamp
         function extractTimestamp(rawDate) {
             if (!rawDate || typeof rawDate !== 'string') return 0;
             const cleaned = rawDate.trim();
@@ -1003,15 +988,13 @@ layout: null
 
             container.innerHTML = rows.map((row, idx) => `
                 <a href="${row.link}" target="_blank" rel="noopener" class="board-link" data-row-index="${idx}">
-                    <div class="board-row">
-                        <div class="board-row category" data-category="${idx}">${row.category}</div>
-                        <div class="roll-window" data-window="${idx}">
-                            <div class="roll-stack" data-stack="${idx}">
-                                <div class="roll-item">${escapeHtml(row.title)}</div>
-                            </div>
+                    <div class="board-category" data-category="${idx}">${row.category}</div>
+                    <div class="roll-window" data-window="${idx}">
+                        <div class="roll-stack" data-stack="${idx}">
+                            <div class="roll-item">${escapeHtml(row.title)}</div>
                         </div>
-                        <div class="board-row time" data-time="${idx}">${row.time}</div>
                     </div>
+                    <div class="board-time" data-time="${idx}">${row.time}</div>
                 </a>
             `).join('');
 
@@ -1043,22 +1026,16 @@ layout: null
             setInterval(() => {
                 const items = document.querySelectorAll('.roll-item:first-child');
                 if (items.length === 0) return;
-
                 const el = items[Math.floor(Math.random() * items.length)];
                 const text = el.textContent;
                 if (!text || text.length < 3) return;
-
                 const pos = 1 + Math.floor(Math.random() * (text.length - 2));
                 const char = text[pos];
                 if (char === ' ') return;
-
                 el.innerHTML = escapeHtml(text.slice(0, pos)) +
                                 '<span class="flicker">' + escapeHtml(char) + '</span>' +
                                 escapeHtml(text.slice(pos + 1));
-
-                setTimeout(() => {
-                    el.textContent = text;
-                }, 280);
+                setTimeout(() => { el.textContent = text; }, 280);
             }, 2000);
         }
 
@@ -1075,11 +1052,9 @@ layout: null
 
         function startRowRolling(rowIndex, initialRow) {
             let currentRow = initialRow;
-
             const rollOnce = () => {
                 const pool = getFlipPool();
                 if (pool.length === 0) return;
-
                 let nextItem = null;
                 let attempts = 0;
                 while (attempts < 20) {
@@ -1091,11 +1066,9 @@ layout: null
                     attempts++;
                 }
                 if (!nextItem) return;
-
                 performRoll(rowIndex, nextItem);
                 currentRow = nextItem;
             };
-
             setTimeout(() => {
                 rollOnce();
                 setInterval(rollOnce, 45000 + Math.random() * 5000);
@@ -1107,7 +1080,6 @@ layout: null
             const categoryEl = document.querySelector(`[data-category="${rowIndex}"]`);
             const timeEl = document.querySelector(`[data-time="${rowIndex}"]`);
             const linkEl = document.querySelector(`[data-row-index="${rowIndex}"]`);
-
             if (!stackEl || !linkEl) return;
 
             const newItem = document.createElement('div');
@@ -1123,7 +1095,6 @@ layout: null
                 if (categoryEl) categoryEl.textContent = nextItem.category;
                 if (timeEl) timeEl.textContent = nextItem.time;
                 linkEl.href = nextItem.link;
-
                 const firstChild = stackEl.firstElementChild;
                 if (firstChild) firstChild.remove();
                 stackEl.style.transition = 'none';
@@ -1134,6 +1105,6 @@ layout: null
             }, 600);
         }
     </script>
-    
+
 </body>
 </html>
