@@ -38,7 +38,7 @@ jobs:
             { name: 'bangalore', url: 'https://www.thehindu.com/news/cities/bangalore/feeder/default.rss' },
             { name: 'mumbai', url: 'https://www.thehindu.com/news/cities/mumbai/feeder/default.rss' },
             { name: 'delhi', url: 'https://www.thehindu.com/news/cities/Delhi/feeder/default.rss' },
-            { name: 'up', url: 'https://www.hindustantimes.com/feeds/rss/cities/lucknow/rssfeed.xml' }
+            { name: 'up', url: 'https://www.thehindu.com/news/national/other-states/feeder/default.rss' }
           ];
           
           (async () => {
