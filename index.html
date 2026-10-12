@@ -894,7 +894,7 @@ layout: null
         ☕ Support the Writer
     </a>
 
-    <script>
+        <script>
         document.getElementById('uncoverBtn').addEventListener('click', function(e) {
             e.preventDefault(); 
             
@@ -909,6 +909,9 @@ layout: null
             }, 650); 
         });
 
+        // ============================================
+        // AIRPORT DEPARTURE BOARD
+        // ============================================
         const CATEGORIES = [
             { file: 'news-world.json', label: 'WORLD' },
             { file: 'news-india.json', label: 'INDIA' },
@@ -920,16 +923,19 @@ layout: null
 
         let allItems = [];
 
+        // Robust time extractor — regex-first
         function extractTime(rawDate) {
             if (!rawDate || typeof rawDate !== 'string') return '--:--';
             const cleaned = rawDate.trim();
             if (!cleaned) return '--:--';
+
             const timeMatch = cleaned.match(/(\d{1,2}):(\d{2}):\d{2}/);
             if (timeMatch) {
                 const hh = String(timeMatch[1]).padStart(2, '0');
                 const mm = String(timeMatch[2]).padStart(2, '0');
                 return hh + ':' + mm;
             }
+
             const d = new Date(cleaned);
             if (!isNaN(d.getTime())) {
                 const hh = String(d.getHours()).padStart(2, '0');
@@ -1009,7 +1015,7 @@ layout: null
             }
 
             startFlicker();
-            startRolling(rows);
+            startRolling(rows.length);
         });
 
         function escapeHtml(str) {
@@ -1022,6 +1028,9 @@ layout: null
                 .replace(/'/g, '&#39;');
         }
 
+        // ============================================
+        // LETTER FLICKER
+        // ============================================
         function startFlicker() {
             setInterval(() => {
                 const items = document.querySelectorAll('.roll-item:first-child');
@@ -1029,58 +1038,89 @@ layout: null
                 const el = items[Math.floor(Math.random() * items.length)];
                 const text = el.textContent;
                 if (!text || text.length < 3) return;
+
                 const pos = 1 + Math.floor(Math.random() * (text.length - 2));
                 const char = text[pos];
                 if (char === ' ') return;
+
                 el.innerHTML = escapeHtml(text.slice(0, pos)) +
                                 '<span class="flicker">' + escapeHtml(char) + '</span>' +
                                 escapeHtml(text.slice(pos + 1));
-                setTimeout(() => { el.textContent = text; }, 280);
+
+                setTimeout(() => {
+                    el.textContent = text;
+                }, 280);
             }, 2000);
         }
 
-        function startRolling(initialRows) {
+        // ============================================
+        // ROLLING ANIMATION
+        // ONE global scheduler rolls one row at a time.
+        // Rows are cycled through a shuffled queue so no two
+        // rows ever roll at the same moment.
+        // ============================================
+        let rollQueue = [];
+        let currentRollIndex = 0;
+
+        function startRolling(totalRows) {
+            rollQueue = [];
+            for (let i = 0; i < totalRows; i++) {
+                rollQueue.push(i);
+            }
+            shuffleQueue();
+
+            // First roll after 5 seconds
             setTimeout(() => {
-                for (let i = 0; i < initialRows.length; i++) {
-                    const stagger = i * 6000 + Math.random() * 3000;
-                    setTimeout(() => {
-                        startRowRolling(i, initialRows[i]);
-                    }, stagger);
-                }
+                rollOneRow();
             }, 5000);
         }
 
-        function startRowRolling(rowIndex, initialRow) {
-            let currentRow = initialRow;
-            const rollOnce = () => {
-                const pool = getFlipPool();
-                if (pool.length === 0) return;
-                let nextItem = null;
-                let attempts = 0;
-                while (attempts < 20) {
-                    const candidate = pool[Math.floor(Math.random() * pool.length)];
-                    if (candidate.title !== currentRow.title) {
-                        nextItem = candidate;
-                        break;
-                    }
-                    attempts++;
-                }
-                if (!nextItem) return;
-                performRoll(rowIndex, nextItem);
-                currentRow = nextItem;
-            };
-            setTimeout(() => {
-                rollOnce();
-                setInterval(rollOnce, 45000 + Math.random() * 5000);
-            }, 45000);
+        function shuffleQueue() {
+            for (let i = rollQueue.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [rollQueue[i], rollQueue[j]] = [rollQueue[j], rollQueue[i]];
+            }
         }
 
-        function performRoll(rowIndex, nextItem) {
+        function rollOneRow() {
+            const rowIndex = rollQueue[currentRollIndex];
+            performNextRoll(rowIndex);
+
+            currentRollIndex++;
+            if (currentRollIndex >= rollQueue.length) {
+                currentRollIndex = 0;
+                shuffleQueue();
+            }
+
+            // Next roll in 5-7 seconds
+            const nextDelay = 5000 + Math.random() * 2000;
+            setTimeout(rollOneRow, nextDelay);
+        }
+
+        function performNextRoll(rowIndex) {
             const stackEl = document.querySelector(`[data-stack="${rowIndex}"]`);
             const categoryEl = document.querySelector(`[data-category="${rowIndex}"]`);
             const timeEl = document.querySelector(`[data-time="${rowIndex}"]`);
             const linkEl = document.querySelector(`[data-row-index="${rowIndex}"]`);
             if (!stackEl || !linkEl) return;
+
+            const currentItem = stackEl.querySelector('.roll-item');
+            const currentTitle = currentItem ? currentItem.textContent : '';
+
+            const pool = getFlipPool();
+            if (pool.length === 0) return;
+
+            let nextItem = null;
+            let attempts = 0;
+            while (attempts < 20) {
+                const candidate = pool[Math.floor(Math.random() * pool.length)];
+                if (candidate.title !== currentTitle) {
+                    nextItem = candidate;
+                    break;
+                }
+                attempts++;
+            }
+            if (!nextItem) return;
 
             const newItem = document.createElement('div');
             newItem.className = 'roll-item';
@@ -1095,6 +1135,7 @@ layout: null
                 if (categoryEl) categoryEl.textContent = nextItem.category;
                 if (timeEl) timeEl.textContent = nextItem.time;
                 linkEl.href = nextItem.link;
+
                 const firstChild = stackEl.firstElementChild;
                 if (firstChild) firstChild.remove();
                 stackEl.style.transition = 'none';
@@ -1105,6 +1146,6 @@ layout: null
             }, 600);
         }
     </script>
-
+    
 </body>
 </html>
