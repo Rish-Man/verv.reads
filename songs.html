@@ -135,138 +135,25 @@ layout: null
             margin-bottom: 28px;
         }
 
-        /* VIDEO + CUSTOM CONTROLS */
-        .player-block {
+        /* Video — clean embed, no custom controls */
+        .video-embed {
             max-width: 480px;
             margin: 0 auto 32px auto;
-        }
-
-        .song .video-wrapper {
-            position: relative;
-            width: 100%;
-            border-radius: 12px 12px 0 0;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
-            background: #000;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.12);
             aspect-ratio: 16 / 9;
+            background: #000;
         }
 
-        .song .video-wrapper iframe {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+        .video-embed iframe {
+            width: 100%;
+            height: 100%;
             border: 0;
+            display: block;
         }
 
-        /* The play cover overlay */
-        .video-cover {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: cover;
-            background-position: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: opacity 0.4s ease;
-        }
-
-        .video-cover::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.35);
-            transition: background 0.3s ease;
-        }
-
-        .video-cover:hover::before {
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .video-cover.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .play-btn-big {
-            position: relative;
-            z-index: 2;
-            width: 72px;
-            height: 72px;
-            background: #ffffff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
-            transition: transform 0.3s ease;
-        }
-        .video-cover:hover .play-btn-big { transform: scale(1.1); }
-        .play-btn-big svg { width: 28px; height: 28px; fill: #1a1815; margin-left: 4px; }
-
-        /* ======================================== */
-        /* CUSTOM CONTROL BAR                       */
-        /* ======================================== */
-        .control-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: clamp(20px, 5vw, 40px);
-            background: #1a1815;
-            border-radius: 0 0 12px 12px;
-            padding: 16px 20px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-            transition: opacity 0.3s ease;
-        }
-
-        .control-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px;
-            border-radius: 50%;
-            transition: background 0.25s ease, transform 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .control-btn:hover {
-            background: rgba(252, 246, 232, 0.1);
-            transform: scale(1.05);
-        }
-
-        .control-btn:active {
-            transform: scale(0.95);
-        }
-
-        .control-btn svg {
-            width: 22px;
-            height: 22px;
-            fill: #fcf6e8;
-            transition: fill 0.25s ease;
-        }
-
-        .control-btn.primary svg {
-            width: 26px;
-            height: 26px;
-        }
-
-        .control-btn .icon-pause { display: none; }
-        .control-btn.is-playing .icon-play { display: none; }
-        .control-btn.is-playing .icon-pause { display: block; }
-
-        /* When the video hasn't started yet, dim the control bar */
-        .control-bar.locked {
-            opacity: 0.35;
-            pointer-events: none;
-        }
-
-        /* WHY I LOVE IT */
+        /* Why I love it */
         .why-section {
             margin-top: 28px;
             padding-left: 20px;
@@ -398,7 +285,7 @@ layout: null
             font-style: italic;
         }
 
-        /* Floating support */
+        /* Floating support button */
         .support-btn {
             position: fixed; bottom: 20px; right: 20px;
             display: inline-flex; align-items: center; gap: 8px;
@@ -487,11 +374,6 @@ layout: null
             .ad-cta { width: 100%; text-align: center; }
             .song { padding: 24px 20px; }
             .why-section { padding-left: 16px; }
-            .play-btn-big { width: 60px; height: 60px; }
-            .play-btn-big svg { width: 22px; height: 22px; }
-            .control-bar { gap: 20px; padding: 14px 16px; }
-            .control-btn svg { width: 20px; height: 20px; }
-            .control-btn.primary svg { width: 24px; height: 24px; }
         }
     </style>
 </head>
@@ -505,35 +387,20 @@ layout: null
 
         {% assign sorted_songs = site.songs | sort: "date" | reverse %}
         {% for song in sorted_songs %}
-        {% assign video_id = song.youtube | replace: 'https://www.youtube.com/watch?v=', '' | replace: 'https://youtu.be/', '' | split: '&' | first %}
         <div class="song">
             <div class="song-label">Song Highlight</div>
             <h2>{{ song.title }}</h2>
             <span class="artist">{{ song.artist }}</span>
 
             {% if song.youtube %}
-            <div class="player-block">
-                <div class="video-wrapper" id="player-{{ video_id }}" data-videoid="{{ video_id }}">
-                    <div class="video-cover" style="background-image: url('https://i.ytimg.com/vi/{{ video_id }}/hqdefault.jpg');">
-                        <div class="play-btn-big">
-                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Custom control bar -->
-                <div class="control-bar locked" data-target="{{ video_id }}">
-                    <button class="control-btn" data-action="rewind" aria-label="Rewind">
-                        <svg viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
-                    </button>
-                    <button class="control-btn primary" data-action="toggle" aria-label="Play or pause">
-                        <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                    </button>
-                    <button class="control-btn" data-action="forward" aria-label="Forward">
-                        <svg viewBox="0 0 24 24"><path d="M13 6v12l8.5-6L13 6zM4 18l8.5-6L4 6v12z"/></svg>
-                    </button>
-                </div>
+            <div class="video-embed">
+                <iframe 
+                    src="https://www.youtube.com/embed/{{ song.youtube }}" 
+                    title="{{ song.title }}"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
             </div>
             {% endif %}
 
@@ -609,94 +476,6 @@ layout: null
     <a href="https://instagram.com/verv.reads" target="_blank" class="support-btn">
         ☕ Support the Writer
     </a>
-
-    <!-- YouTube IFrame API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-
-    <script>
-        // Store player instances keyed by video ID
-        const players = {};
-        const pendingPlayers = {};
-
-        // Called automatically by the YouTube IFrame API
-        window.onYouTubeIframeAPIReady = function() {
-            // Nothing to do here yet — players are created on demand
-        };
-
-        // Custom play cover click handlers
-        document.querySelectorAll('.video-cover').forEach(function(cover) {
-            cover.addEventListener('click', function() {
-                const wrapper = cover.parentElement;
-                const videoId = wrapper.getAttribute('data-videoid');
-                const controlBar = wrapper.parentElement.querySelector('.control-bar');
-
-                // Replace cover with actual YouTube iframe
-                wrapper.innerHTML = '<div id="yt-' + videoId + '"></div>';
-                wrapper.style.background = '#000';
-
-                // Create the YouTube player
-                const player = new YT.Player('yt-' + videoId, {
-                    videoId: videoId,
-                    playerVars: {
-                        autoplay: 1,
-                        controls: 0,       // Hide YouTube controls
-                        modestbranding: 1, // Reduce branding
-                        rel: 0,            // No related videos
-                        playsinline: 1,    // Play inline on mobile
-                        fs: 0              // Disable fullscreen button
-                    },
-                    events: {
-                        'onReady': function(event) {
-                            players[videoId] = event.target;
-                            // Unlock the control bar
-                            controlBar.classList.remove('locked');
-                            // Set initial playing state
-                            const toggleBtn = controlBar.querySelector('[data-action="toggle"]');
-                            if (toggleBtn) toggleBtn.classList.add('is-playing');
-                        },
-                        'onStateChange': function(event) {
-                            const toggleBtn = controlBar.querySelector('[data-action="toggle"]');
-                            if (!toggleBtn) return;
-                            if (event.data === YT.PlayerState.PLAYING) {
-                                toggleBtn.classList.add('is-playing');
-                            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-                                toggleBtn.classList.remove('is-playing');
-                            }
-                        }
-                    }
-                });
-            });
-        });
-
-        // Control bar button handlers
-        document.querySelectorAll('.control-bar').forEach(function(bar) {
-            const videoId = bar.getAttribute('data-target');
-
-            bar.querySelectorAll('.control-btn').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    const player = players[videoId];
-                    if (!player) return;
-
-                    const action = btn.getAttribute('data-action');
-                    const state = player.getPlayerState ? player.getPlayerState() : -1;
-
-                    if (action === 'toggle') {
-                        if (state === YT.PlayerState.PLAYING) {
-                            player.pauseVideo();
-                        } else {
-                            player.playVideo();
-                        }
-                    } else if (action === 'rewind') {
-                        const current = player.getCurrentTime();
-                        player.seekTo(Math.max(0, current - 10), true);
-                    } else if (action === 'forward') {
-                        const current = player.getCurrentTime();
-                        player.seekTo(current + 10, true);
-                    }
-                });
-            });
-        });
-    </script>
 
 </body>
 </html>
