@@ -300,13 +300,12 @@ layout: null
             border-radius: 8px;
             overflow: hidden;
             box-shadow:
-                0 20px 50px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.06),
+                0 20px 50px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.08),
                 inset 0 1px 0 rgba(255, 255, 255, 0.15);
             position: relative;
         }
 
-        /* Top metallic edge — makes it feel like a physical board */
         .board-wrapper::before {
             content: '';
             position: absolute;
@@ -314,7 +313,7 @@ layout: null
             height: 2px;
             background: linear-gradient(to right,
                 rgba(255,255,255,0) 0%,
-                rgba(255,255,255,0.4) 50%,
+                rgba(255,255,255,0.5) 50%,
                 rgba(255,255,255,0) 100%);
             z-index: 3;
         }
@@ -378,15 +377,15 @@ layout: null
             position: relative;
         }
 
-        /* Subtle screen scanlines */
+        /* LAYER 1: Scanlines */
         .board-body::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: repeating-linear-gradient(
                 to bottom,
-                rgba(255,255,255,0.015) 0px,
-                rgba(255,255,255,0.015) 1px,
+                rgba(255, 255, 255, 0.025) 0px,
+                rgba(255, 255, 255, 0.025) 1px,
                 transparent 1px,
                 transparent 3px
             );
@@ -394,17 +393,44 @@ layout: null
             z-index: 1;
         }
 
-        /* Top glow — like a lit screen */
+        /* LAYER 2: Grid + pixel dots */
         .board-body::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 60px;
-            background: linear-gradient(to bottom,
-                rgba(255,255,255,0.06) 0%,
-                rgba(255,255,255,0) 100%);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 40px 40px, 40px 40px, 8px 8px;
             pointer-events: none;
             z-index: 1;
+        }
+
+        /* Inner vignette — darkening at edges like a real screen */
+        .board-vignette {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.35) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Top glow — the screen looks lit */
+        .board-glow {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 80px;
+            background: linear-gradient(to bottom,
+                rgba(255,255,255,0.08) 0%,
+                rgba(255,255,255,0) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .board-rows {
+            position: relative;
+            z-index: 3;
         }
 
         .board-row {
@@ -414,8 +440,6 @@ layout: null
             align-items: center;
             padding: 11px 24px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            position: relative;
-            z-index: 2;
             transition: background 0.3s ease;
         }
 
@@ -432,7 +456,7 @@ layout: null
             letter-spacing: 1.5px;
             text-transform: uppercase;
             color: #7dd3fc !important;
-            text-shadow: 0 0 6px rgba(125, 211, 252, 0.3);
+            text-shadow: 0 0 6px rgba(125, 211, 252, 0.35);
         }
 
         .board-row.headline {
@@ -444,6 +468,7 @@ layout: null
             overflow: hidden;
             text-overflow: ellipsis;
             line-height: 1.4;
+            text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
         }
 
         .board-row.time {
@@ -455,7 +480,6 @@ layout: null
             text-align: right;
         }
 
-        /* The link wrapper — makes the whole row clickable */
         .board-link {
             display: contents;
             color: inherit;
@@ -465,19 +489,18 @@ layout: null
         .board-link:hover .board-row.category { color: #a8e6ff !important; }
         .board-link:hover .board-row.time { color: rgba(255,255,255,0.9) !important; }
 
-        /* The flicker animation — one letter dims briefly */
         .flicker {
             animation: flicker 0.15s ease-in-out;
         }
 
         @keyframes flicker {
-            0% { color: #ffffff; text-shadow: none; }
+            0% { color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.15); }
             50% { color: #666666; text-shadow: none; }
-            100% { color: #ffffff; text-shadow: none; }
+            100% { color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.15); }
         }
 
         .board-footer {
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.35);
             padding: 10px 24px;
             text-align: center;
             font-family: 'JetBrains Mono', 'Courier New', monospace;
@@ -498,7 +521,6 @@ layout: null
             text-transform: uppercase;
         }
 
-        /* Mobile adjustments */
         @media (max-width: 768px) {
             .board-row {
                 grid-template-columns: 1fr;
@@ -730,7 +752,7 @@ layout: null
             <div class="hero-description">
                 <p class="opening">Hey, you found Verv.</p>
                 
-                <p>Quick heads-up: this isn't one of those sites with a thousand pop-ups, autoplay videos, and articles written by robots. It's just a place for good stories and good jokes, curated by an actual human — me.</p>
+                <p>Quick heads-up: this isn't one of those sites with a thousand pop-ups, autoplay videos, and articles written by robots. It's just a place for good stories, good jokes, good food, and the news worth noticing — curated by an actual human, me.</p>
                 
                 <p>Every piece you see here earned its spot. Some made me laugh out loud on a crowded train. Some made me sit quietly for a minute after reading. Some I read twice just to enjoy the way they were written. That's the bar.</p>
                 
@@ -794,8 +816,12 @@ layout: null
                     <span>Live · Updated <span id="board-updated">—</span></span>
                 </div>
             </div>
-            <div class="board-body" id="board-body">
-                <div class="board-loading">Loading headlines...</div>
+            <div class="board-body">
+                <div class="board-vignette"></div>
+                <div class="board-glow"></div>
+                <div class="board-rows" id="board-body">
+                    <div class="board-loading">Loading headlines...</div>
+                </div>
             </div>
             <div class="board-footer">
                 Aggregated from The Hindu · Indian Express · ABP Live · Updated every 6 hours
@@ -891,12 +917,27 @@ layout: null
         ];
 
         function formatTime(dateStr) {
-            if (!dateStr) return '—';
-            const d = new Date(dateStr);
-            if (isNaN(d.getTime())) return '—';
-            const hh = String(d.getHours()).padStart(2, '0');
-            const mm = String(d.getMinutes()).padStart(2, '0');
-            return hh + ':' + mm;
+            if (!dateStr) return '--:--';
+            try {
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return '--:--';
+                const hh = String(d.getHours()).padStart(2, '0');
+                const mm = String(d.getMinutes()).padStart(2, '0');
+                return hh + ':' + mm;
+            } catch (e) {
+                return '--:--';
+            }
+        }
+
+        function getTimeMs(dateStr) {
+            if (!dateStr) return 0;
+            try {
+                const d = new Date(dateStr);
+                const t = d.getTime();
+                return isNaN(t) ? 0 : t;
+            } catch (e) {
+                return 0;
+            }
         }
 
         Promise.all(CATEGORIES.map(cat =>
@@ -905,8 +946,6 @@ layout: null
                 .then(data => ({ label: cat.label, items: data.items || [] }))
                 .catch(() => ({ label: cat.label, items: [] }))
         )).then(results => {
-            // Build a mixed list — take the newest item from each category first,
-            // then fill up to 10 rows with the next newest across all.
             const all = [];
             results.forEach(r => {
                 r.items.forEach(item => {
@@ -915,15 +954,13 @@ layout: null
                         title: item.title,
                         link: item.link,
                         time: formatTime(item.date),
-                        rawTime: item.date ? new Date(item.date).getTime() : 0
+                        rawTime: getTimeMs(item.date)
                     });
                 });
             });
 
-            // Sort newest first
             all.sort((a, b) => b.rawTime - a.rawTime);
 
-            // Take top 10
             const rows = all.slice(0, 10);
 
             const container = document.getElementById('board-body');
@@ -943,16 +980,16 @@ layout: null
                 </a>
             `).join('');
 
-            // Update the "Updated X minutes ago" text using the newest item
             if (rows[0] && rows[0].rawTime) {
                 const minsAgo = Math.floor((Date.now() - rows[0].rawTime) / 60000);
                 const updatedEl = document.getElementById('board-updated');
                 if (minsAgo < 1) updatedEl.textContent = 'just now';
                 else if (minsAgo < 60) updatedEl.textContent = minsAgo + 'm ago';
                 else updatedEl.textContent = Math.floor(minsAgo / 60) + 'h ago';
+            } else {
+                document.getElementById('board-updated').textContent = 'recently';
             }
 
-            // Start the subtle flicker
             startFlicker();
         });
 
@@ -966,32 +1003,24 @@ layout: null
                 .replace(/'/g, '&#39;');
         }
 
-        // ============================================
-        // SUBTLE LETTER FLICKER
-        // One letter dims for a split-second, then back
-        // ============================================
         function startFlicker() {
             const headlineEls = document.querySelectorAll('.board-row.headline');
 
             setInterval(() => {
                 if (headlineEls.length === 0) return;
 
-                // Pick a random row
                 const row = headlineEls[Math.floor(Math.random() * headlineEls.length)];
                 const text = row.textContent;
                 if (!text || text.length < 3) return;
 
-                // Pick a random letter position (avoid very start/end)
                 const pos = 1 + Math.floor(Math.random() * (text.length - 2));
                 const char = text[pos];
-                if (char === ' ') return; // skip spaces
+                if (char === ' ') return;
 
-                // Split the text, wrap the letter in a flicker span
                 row.innerHTML = escapeHtml(text.slice(0, pos)) +
                                 '<span class="flicker">' + escapeHtml(char) + '</span>' +
                                 escapeHtml(text.slice(pos + 1));
 
-                // Remove the flicker span after the animation
                 setTimeout(() => {
                     row.textContent = text;
                 }, 200);
