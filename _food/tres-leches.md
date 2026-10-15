@@ -1,6 +1,6 @@
 ---
 name: Tres leches
-image: https://www.facebook.com/MagnoliaBakeryIndia/posts/if-you-know-you-know-our-classic-tres-leches-has-been-a-favourite-for-as-long-as/1518794840259752/
+image: images/tres-leches-img.jpg
 alt_names: Trileçe, Delicias Suecas, Milk Cake
 about: >-
   A tres leches cake, also known as dulce de tres leches, pan tres leches or
