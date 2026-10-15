@@ -1,9 +1,7 @@
 ---
 name: Tres leches
 image: https://www.facebook.com/MagnoliaBakeryIndia/posts/if-you-know-you-know-our-classic-tres-leches-has-been-a-favourite-for-as-long-as/1518794840259752/
-alt_names: Trileçe - For Albania, Turkey, Bosnia and Herzegovina, Serbia, and
-  North Macedonia | Delicias Suecas - For Managua, Nicaragua | Milk Cake - For
-  English-speaking bakeries, India, Pakistan, and parts of South Asia.
+alt_names: Trileçe, Delicias Suecas, Milk Cake
 about: >-
   A tres leches cake, also known as dulce de tres leches, pan tres leches or
   simply tres leches, is a Latin American sponge cake soaked in evaporated milk,
