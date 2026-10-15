@@ -17,7 +17,7 @@ content:
         type: string
         required: true
       - name: date
-        label: Date (use format YYYY-MM-DD, e.g. 2026-10-10)
+        label: Date (use format YYYY-MM-DD, e.g. 2026-10-15)
         type: string
         required: true
       - name: teaser
@@ -75,7 +75,7 @@ content:
         type: text
         required: true
       - name: date
-        label: Date (use format YYYY-MM-DD, e.g. 2026-10-10)
+        label: Date (use format YYYY-MM-DD, e.g. 2026-10-15)
         type: string
         required: true
 
@@ -92,8 +92,8 @@ content:
         type: string
         required: true
       - name: image
-        label: Dish photo URL (paste a full URL ending in .jpg / .png / .webp)
-        type: string
+        label: Dish photo (upload)
+        type: image
         required: true
       - name: alt_names
         label: Also known as (comma separated)
@@ -110,6 +110,6 @@ content:
         label: Recipe source (e.g. "BBC Good Food", "My grandmother")
         type: string
       - name: date
-        label: Date (use format YYYY-MM-DD, e.g. 2026-10-10)
+        label: Date (use format YYYY-MM-DD, e.g. 2026-10-15)
         type: string
         required: true
