@@ -1,6 +1,6 @@
 ---
 name: Tres leches
-image: images/tres-leches-img.jpg
+image: /images/tres-leches-img.jpg
 alt_names: Trileçe, Delicias Suecas, Milk Cake
 about: >-
   A tres leches cake, also known as dulce de tres leches, pan tres leches or
