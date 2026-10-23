@@ -2,6 +2,11 @@
   "source": "bangalore",
   "items": [
     {
+      "title": "Karnataka SIR: Teaching on the back burner",
+      "link": "https://www.thehindu.com/news/national/karnataka//article71606292.ece",
+      "date": "Fri, 23 Oct 2026 07:00:36 +0530"
+    },
+    {
       "title": "Two men returning from Mysuru Dasara die as bike hits electric pole",
       "link": "https://www.thehindu.com/news/cities/bangalore/two-men-returning-from-mysuru-dasara-die-as-bike-hits-electric-pole/article71613037.ece",
       "date": "Fri, 23 Oct 2026 00:37:41 +0530"
@@ -12,9 +17,19 @@
       "date": "Fri, 23 Oct 2026 00:31:01 +0530"
     },
     {
+      "title": "Karnataka to frame policy against hospitals withholding bodies over unpaid bills",
+      "link": "https://www.thehindu.com/news/national/karnataka/karnataka-to-frame-policy-against-hospitals-withholding-bodies-over-unpaid-bills/article71612752.ece",
+      "date": "Thu, 22 Oct 2026 22:40:13 +0530"
+    },
+    {
       "title": "Two more on police radar in suspected IED blast in Bengaluru",
       "link": "https://www.thehindu.com/news/cities/bangalore/two-more-on-police-radar-in-suspected-ied-blast-in-bengaluru/article71612887.ece",
       "date": "Thu, 22 Oct 2026 21:55:13 +0530"
+    },
+    {
+      "title": "Kumaraswamy flags delay in land allocation for testing facilities in Mandya",
+      "link": "https://www.thehindu.com/news/national/karnataka/kumaraswamy-flags-delay-in-land-allocation-for-testing-facilities-in-mandya/article71612869.ece",
+      "date": "Thu, 22 Oct 2026 21:52:58 +0530"
     },
     {
       "title": "Four arrested over illegal SIM box network suspected of aiding cyberfrauds",
@@ -22,24 +37,9 @@
       "date": "Thu, 22 Oct 2026 20:51:21 +0530"
     },
     {
-      "title": "Anti-SIR groups to organise Tiranga March at Townhall",
-      "link": "https://www.thehindu.com/news/cities/bangalore/anti-sir-groups-to-organise-tiranga-march-at-townhall/article71612412.ece",
-      "date": "Thu, 22 Oct 2026 20:25:58 +0530"
-    },
-    {
-      "title": "Animal activists urge CM to act against North Corporation officials over dog removals",
-      "link": "https://www.thehindu.com/news/cities/bangalore/animal-activists-urge-cm-to-act-against-north-corporation-officials-over-dog-removals/article71612298.ece",
-      "date": "Thu, 22 Oct 2026 20:23:44 +0530"
-    },
-    {
-      "title": "FIR against woman over social media video targeting Karnataka government and Chief Minister",
-      "link": "https://www.thehindu.com/news/cities/bangalore/fir-against-woman-over-social-media-video-targeting-karnataka-government-and-chief-minister/article71612258.ece",
-      "date": "Thu, 22 Oct 2026 20:07:50 +0530"
-    },
-    {
-      "title": "How did 37 people declare themselves dead in Karnataka’s voter rolls?",
-      "link": "https://www.thehindu.com/videos/how-did-37-people-declare-themselves-dead-in-karnatakas-voter-rolls/article71612278.ece",
-      "date": "Thu, 22 Oct 2026 20:01:07 +0530"
+      "title": "Bengaluru Pink Line Metro opening approval expected within five days; Blue Line trial runs by October-end",
+      "link": "https://www.thehindu.com/news/national/karnataka/bengaluru-pink-line-metro-opening-approval-expected-within-five-days-blue-line-trial-runs-by-october-end/article71612366.ece",
+      "date": "Thu, 22 Oct 2026 20:45:25 +0530"
     }
   ]
 }
