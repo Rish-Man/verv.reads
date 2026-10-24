@@ -86,9 +86,11 @@ layout: null
             z-index: 100;
         }
         .nav-logo { font-family: 'Pacifico', cursive; font-size: 1.7rem; color: #ffffff !important; }
-        .nav-links { display: flex; gap: 22px; }
+        .nav-links { display: flex; gap: 22px; align-items: center; }
         .nav-links a { color: #a0a0a0 !important; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s ease; }
         .nav-links a:hover { color: #ffffff !important; }
+        .nav-links a.login-link { color: #7dd3fc !important; border: 1px solid rgba(125, 211, 252, 0.4); padding: 6px 14px; border-radius: 50px; }
+        .nav-links a.login-link:hover { background: rgba(125, 211, 252, 0.1); border-color: #7dd3fc; }
 
         .hero {
             min-height: 100vh;
@@ -758,6 +760,7 @@ layout: null
             <a href="songs.html">Songs</a>
             <a href="eats.html">The Eats</a>
             <a href="news.html">News</a>
+            <a href="login.html" class="login-link">Login</a>
         </div>
     </nav>
 
@@ -874,6 +877,8 @@ layout: null
                 <a href="eats.html">The Eats</a>
                 <span class="divider-dot">•</span>
                 <a href="news.html">News</a>
+                <span class="divider-dot">•</span>
+                <a href="login.html">Login</a>
                 <span class="divider-dot">•</span>
                 <a href="https://rish-man.github.io/SDG-Theme-based-Games/" target="_blank">SDG Games</a>
                 <span class="divider-dot">•</span>
