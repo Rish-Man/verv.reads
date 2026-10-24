@@ -89,8 +89,10 @@ layout: null
         .nav-links { display: flex; gap: 22px; align-items: center; }
         .nav-links a { color: #a0a0a0 !important; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s ease; }
         .nav-links a:hover { color: #ffffff !important; }
-        .nav-links a.login-link { color: #7dd3fc !important; border: 1px solid rgba(125, 211, 252, 0.4); padding: 6px 14px; border-radius: 50px; }
-        .nav-links a.login-link:hover { background: rgba(125, 211, 252, 0.1); border-color: #7dd3fc; }
+        
+        /* Auth Button Styling */
+        .auth-btn { color: #7dd3fc !important; border: 1px solid rgba(125, 211, 252, 0.4); padding: 6px 14px; border-radius: 50px; }
+        .auth-btn:hover { background: rgba(125, 211, 252, 0.1); border-color: #7dd3fc; }
 
         .hero {
             min-height: 100vh;
@@ -760,7 +762,8 @@ layout: null
             <a href="songs.html">Songs</a>
             <a href="eats.html">The Eats</a>
             <a href="news.html">News</a>
-            <a href="login.html" class="login-link">Login</a>
+            <!-- The ID here allows us to change this link dynamically -->
+            <a href="login.html" class="auth-btn" id="nav-auth-btn">Login</a>
         </div>
     </nav>
 
@@ -878,7 +881,7 @@ layout: null
                 <span class="divider-dot">•</span>
                 <a href="news.html">News</a>
                 <span class="divider-dot">•</span>
-                <a href="login.html">Login</a>
+                <a href="login.html" id="footer-auth-btn">Login</a>
                 <span class="divider-dot">•</span>
                 <a href="https://rish-man.github.io/SDG-Theme-based-Games/" target="_blank">SDG Games</a>
                 <span class="divider-dot">•</span>
@@ -910,6 +913,7 @@ layout: null
     </a>
 
     <script>
+        // 1. Loading the UI script (Needs to run always)
         document.getElementById('uncoverBtn').addEventListener('click', function(e) {
             e.preventDefault(); 
             
@@ -924,6 +928,44 @@ layout: null
             }, 650); 
         });
 
+        // 2. Checking for logged in user to change buttons
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+        const supabaseUrl = 'https://tujxkdzqbswrsvcjrnvx.supabase.co'
+        const supabaseKey = 'sb_publishable_iqxzx373BPW-yI-MsA_27A_PvsQdGox'
+        const supabase = createClient(supabaseUrl, supabaseKey)
+
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession()
+            
+            const navBtn = document.getElementById('nav-auth-btn');
+            const footerBtn = document.getElementById('footer-auth-btn');
+
+            if (session) {
+                // User is logged in -> Change links to Profile
+                if (navBtn) {
+                    navBtn.textContent = 'Profile';
+                    navBtn.href = '/verv.reads/profile.html';
+                }
+                if (footerBtn) {
+                    footerBtn.textContent = 'Profile';
+                    footerBtn.href = '/verv.reads/profile.html';
+                }
+            } else {
+                // User is a guest -> Keep links as Login
+                if (navBtn) {
+                    navBtn.textContent = 'Login';
+                    navBtn.href = '/verv.reads/login.html';
+                }
+                if (footerBtn) {
+                    footerBtn.textContent = 'Login';
+                    footerBtn.href = '/verv.reads/login.html';
+                }
+            }
+        }
+        checkAuth();
+
+        // 3. News Board Logic
         const CATEGORIES = [
             { file: 'news-world.json', label: 'WORLD' },
             { file: 'news-india.json', label: 'INDIA' },
