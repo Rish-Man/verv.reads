@@ -25,6 +25,17 @@ layout: null
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;800&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+    <!-- Structured Data to tell Google this is "Verv", not GitHub Pages -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Verv",
+      "alternateName": ["Verv Reads", "Verv Stories & Jokes"],
+      "url": "https://rish-man.github.io/verv.reads/"
+    }
+    </script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { overflow-x: hidden; }
@@ -426,7 +437,6 @@ layout: null
             z-index: 3;
         }
 
-        /* THE ROW — now the anchor itself is the grid */
         .board-link {
             display: grid;
             grid-template-columns: 110px 1fr 80px;
@@ -894,7 +904,7 @@ layout: null
         ☕ Support the Writer
     </a>
 
-        <script>
+    <script>
         document.getElementById('uncoverBtn').addEventListener('click', function(e) {
             e.preventDefault(); 
             
@@ -909,9 +919,6 @@ layout: null
             }, 650); 
         });
 
-        // ============================================
-        // AIRPORT DEPARTURE BOARD
-        // ============================================
         const CATEGORIES = [
             { file: 'news-world.json', label: 'WORLD' },
             { file: 'news-india.json', label: 'INDIA' },
@@ -923,19 +930,16 @@ layout: null
 
         let allItems = [];
 
-        // Robust time extractor — regex-first
         function extractTime(rawDate) {
             if (!rawDate || typeof rawDate !== 'string') return '--:--';
             const cleaned = rawDate.trim();
             if (!cleaned) return '--:--';
-
             const timeMatch = cleaned.match(/(\d{1,2}):(\d{2}):\d{2}/);
             if (timeMatch) {
                 const hh = String(timeMatch[1]).padStart(2, '0');
                 const mm = String(timeMatch[2]).padStart(2, '0');
                 return hh + ':' + mm;
             }
-
             const d = new Date(cleaned);
             if (!isNaN(d.getTime())) {
                 const hh = String(d.getHours()).padStart(2, '0');
@@ -1028,9 +1032,6 @@ layout: null
                 .replace(/'/g, '&#39;');
         }
 
-        // ============================================
-        // LETTER FLICKER
-        // ============================================
         function startFlicker() {
             setInterval(() => {
                 const items = document.querySelectorAll('.roll-item:first-child');
@@ -1038,27 +1039,16 @@ layout: null
                 const el = items[Math.floor(Math.random() * items.length)];
                 const text = el.textContent;
                 if (!text || text.length < 3) return;
-
                 const pos = 1 + Math.floor(Math.random() * (text.length - 2));
                 const char = text[pos];
                 if (char === ' ') return;
-
                 el.innerHTML = escapeHtml(text.slice(0, pos)) +
                                 '<span class="flicker">' + escapeHtml(char) + '</span>' +
                                 escapeHtml(text.slice(pos + 1));
-
-                setTimeout(() => {
-                    el.textContent = text;
-                }, 280);
+                setTimeout(() => { el.textContent = text; }, 280);
             }, 2000);
         }
 
-        // ============================================
-        // ROLLING ANIMATION
-        // ONE global scheduler rolls one row at a time.
-        // Rows are cycled through a shuffled queue so no two
-        // rows ever roll at the same moment.
-        // ============================================
         let rollQueue = [];
         let currentRollIndex = 0;
 
@@ -1068,8 +1058,6 @@ layout: null
                 rollQueue.push(i);
             }
             shuffleQueue();
-
-            // First roll after 5 seconds
             setTimeout(() => {
                 rollOneRow();
             }, 5000);
@@ -1092,7 +1080,6 @@ layout: null
                 shuffleQueue();
             }
 
-            // Next roll in 5-7 seconds
             const nextDelay = 5000 + Math.random() * 2000;
             setTimeout(rollOneRow, nextDelay);
         }
@@ -1146,6 +1133,6 @@ layout: null
             }, 600);
         }
     </script>
-    
+
 </body>
 </html>
