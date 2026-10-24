@@ -913,59 +913,18 @@ layout: null
     </a>
 
     <script>
-        // 1. Loading the UI script (Needs to run always)
+        // UI and News Board Script (No modules here)
         document.getElementById('uncoverBtn').addEventListener('click', function(e) {
             e.preventDefault(); 
-            
             const body = document.body;
             const overlay = document.getElementById('blurOverlay');
-            
             body.classList.add('blur-out');
             overlay.classList.add('active');
-            
             setTimeout(function() {
                 window.location.href = 'originals.html';
             }, 650); 
         });
 
-        // 2. Checking for logged in user to change buttons
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-        const supabaseUrl = 'https://tujxkdzqbswrsvcjrnvx.supabase.co'
-        const supabaseKey = 'sb_publishable_iqxzx373BPW-yI-MsA_27A_PvsQdGox'
-        const supabase = createClient(supabaseUrl, supabaseKey)
-
-        async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession()
-            
-            const navBtn = document.getElementById('nav-auth-btn');
-            const footerBtn = document.getElementById('footer-auth-btn');
-
-            if (session) {
-                // User is logged in -> Change links to Profile
-                if (navBtn) {
-                    navBtn.textContent = 'Profile';
-                    navBtn.href = '/verv.reads/profile.html';
-                }
-                if (footerBtn) {
-                    footerBtn.textContent = 'Profile';
-                    footerBtn.href = '/verv.reads/profile.html';
-                }
-            } else {
-                // User is a guest -> Keep links as Login
-                if (navBtn) {
-                    navBtn.textContent = 'Login';
-                    navBtn.href = '/verv.reads/login.html';
-                }
-                if (footerBtn) {
-                    footerBtn.textContent = 'Login';
-                    footerBtn.href = '/verv.reads/login.html';
-                }
-            }
-        }
-        checkAuth();
-
-        // 3. News Board Logic
         const CATEGORIES = [
             { file: 'news-world.json', label: 'WORLD' },
             { file: 'news-india.json', label: 'INDIA' },
@@ -1179,6 +1138,31 @@ layout: null
                 });
             }, 600);
         }
+    </script>
+
+    <!-- Supabase Auth Module (Must be a separate script tag) -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+        const supabaseUrl = 'https://tujxkdzqbswrsvcjrnvx.supabase.co'
+        const supabaseKey = 'sb_publishable_iqxzx373BPW-yI-MsA_27A_PvsQdGox'
+        const supabase = createClient(supabaseUrl, supabaseKey)
+
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession()
+            
+            const navBtn = document.getElementById('nav-auth-btn');
+            const footerBtn = document.getElementById('footer-auth-btn');
+
+            if (session) {
+                if (navBtn) { navBtn.textContent = 'Profile'; navBtn.href = '/verv.reads/profile.html'; }
+                if (footerBtn) { footerBtn.textContent = 'Profile'; footerBtn.href = '/verv.reads/profile.html'; }
+            } else {
+                if (navBtn) { navBtn.textContent = 'Login'; navBtn.href = '/verv.reads/login.html'; }
+                if (footerBtn) { footerBtn.textContent = 'Login'; footerBtn.href = '/verv.reads/login.html'; }
+            }
+        }
+        checkAuth();
     </script>
 
 </body>
