@@ -60,10 +60,7 @@ layout: null
             font-size: 1rem;
             color: #2c2a26;
         }
-        input:focus {
-            outline: none;
-            border-color: #1a1815;
-        }
+        input:focus { outline: none; border-color: #1a1815; }
         button {
             width: 100%;
             padding: 14px;
@@ -77,66 +74,35 @@ layout: null
             cursor: pointer;
             transition: background 0.3s;
         }
-        button:hover {
-            background: #000;
-        }
-        .message {
-            margin-top: 15px;
-            font-size: 0.85rem;
-            min-height: 20px;
-        }
+        button:hover { background: #000; }
+        .message { margin-top: 15px; font-size: 0.85rem; min-height: 20px; }
         .success { color: #15803d; }
         .error { color: #b91c1c; }
-        
         .back-link {
-            display: inline-block;
-            margin-top: 25px;
-            color: #6a6760;
-            text-decoration: none;
-            font-size: 0.85rem;
+            display: inline-block; margin-top: 25px; color: #6a6760;
+            text-decoration: none; font-size: 0.85rem;
         }
-        .back-link:hover {
-            color: #1a1815;
-            text-decoration: underline;
-        }
-        
-        .user-info {
-            display: none;
-        }
+        .back-link:hover { color: #1a1815; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN FORM -->
     <div class="login-box" id="auth-form-container">
         <h1>Welcome.</h1>
-        <p>Log in or sign up to Verv.</p>
+        <p>Enter your email to log in or sign up.</p>
         
         <form id="auth-form">
             <input type="email" id="email" placeholder="you@example.com" required>
-            <input type="password" id="password" placeholder="Your password" required>
-            <button type="submit" id="submit-btn">Log In / Sign Up</button>
+            <button type="submit" id="submit-btn">Send Login Link</button>
         </form>
         
         <div class="message" id="message"></div>
-        <!-- FIXED BACK LINK FOR SUBFOLDER -->
         <a href="/verv.reads/index.html" class="back-link">← Back to Home</a>
     </div>
 
-    <!-- LOGGED IN VIEW -->
-    <div class="login-box user-info" id="logged-in-container">
-        <h1>You're in.</h1>
-        <p>Logged in as: <strong id="user-email"></strong></p>
-        <button id="logout-btn" style="margin-top: 20px;">Log Out</button>
-        <!-- FIXED BACK LINK FOR SUBFOLDER -->
-        <a href="/verv.reads/index.html" class="back-link">← Back to Home</a>
-    </div>
-
-    <!-- SUPABASE LOGIC -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-        // Your Supabase credentials
         const supabaseUrl = 'https://tujxkdzqbswrsvcjrnvx.supabase.co'
         const supabaseKey = 'sb_publishable_iqxzx373BPW-yI-MsA_27A_PvsQdGox'
         const supabase = createClient(supabaseUrl, supabaseKey)
@@ -144,91 +110,38 @@ layout: null
         const authForm = document.getElementById('auth-form')
         const messageEl = document.getElementById('message')
         const emailInput = document.getElementById('email')
-        const passwordInput = document.getElementById('password')
         const submitBtn = document.getElementById('submit-btn')
-        
-        const formContainer = document.getElementById('auth-form-container')
-        const loggedInContainer = document.getElementById('logged-in-container')
-        const userEmailSpan = document.getElementById('user-email')
-        const logoutBtn = document.getElementById('logout-btn')
 
-        // Check if user is already logged in when page loads
-        async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession()
-            if (session) {
-                showLoggedIn(session.user.email)
-            }
-        }
-        checkSession()
+        // If already logged in, go straight to profile
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) window.location.href = '/verv.reads/profile.html'
+        })
 
-        // Handle Login / Sign up
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault()
-            submitBtn.textContent = 'Please wait...'
+            submitBtn.textContent = 'Sending...'
             submitBtn.disabled = true
             messageEl.textContent = ''
             messageEl.className = 'message'
 
-            const email = emailInput.value
-            const password = passwordInput.value
-
-            // Try to log in
-            let { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password,
+            const { error } = await supabase.auth.signInWithOtp({
+                email: emailInput.value,
+                options: {
+                    emailRedirectTo: 'https://rish-man.github.io/verv.reads/profile.html'
+                }
             })
 
-            // If login fails, try to sign up (create account)
-            if (error && error.message.includes('Invalid login credentials')) {
-                const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-                    email: email,
-                    password: password,
-                })
-                
-                if (signUpError) {
-                    messageEl.textContent = signUpError.message
-                    messageEl.className = 'message error'
-                } else {
-                    messageEl.textContent = 'Account created! Logging you in...'
-                    messageEl.className = 'message success'
-                    // Automatically log them in after sign up
-                    const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
-                        email: email,
-                        password: password,
-                    })
-                    if (loginData.session) {
-                        showLoggedIn(loginData.session.user.email)
-                    }
-                }
-            } else if (error) {
+            if (error) {
                 messageEl.textContent = error.message
                 messageEl.className = 'message error'
-            } else if (data.session) {
-                messageEl.textContent = 'Logged in successfully!'
+            } else {
+                messageEl.textContent = 'Check your email for the login link!'
                 messageEl.className = 'message success'
-                showLoggedIn(data.session.user.email)
             }
 
-            submitBtn.textContent = 'Log In / Sign Up'
+            submitBtn.textContent = 'Send Login Link'
             submitBtn.disabled = false
         })
-
-        // Handle Logout
-        logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut()
-            loggedInContainer.style.display = 'none'
-            formContainer.style.display = 'block'
-            emailInput.value = ''
-            passwordInput.value = ''
-            messageEl.textContent = ''
-        })
-
-        function showLoggedIn(email) {
-            formContainer.style.display = 'none'
-            loggedInContainer.style.display = 'block'
-            userEmailSpan.textContent = email
-        }
     </script>
-
 </body>
 </html>
