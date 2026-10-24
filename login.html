@@ -1,0 +1,234 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Verv</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Poppins:wght@300;400;600&family=Josefin+Sans:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-image: url('originals-bg.png.avif');
+            background-color: #fcf6e8;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Josefin Sans', sans-serif;
+            color: #2c2a26;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .login-box {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(44, 42, 38, 0.15);
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .login-box h1 {
+            font-family: 'Abril Fatface', cursive;
+            font-size: 2.5rem;
+            color: #1a1815;
+            margin-bottom: 10px;
+        }
+        .login-box p {
+            font-size: 0.95rem;
+            color: #6a6760;
+            margin-bottom: 25px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(44, 42, 38, 0.2);
+            border-radius: 8px;
+            background: #fff;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 1rem;
+            color: #2c2a26;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1a1815;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #1a1815;
+            color: #fcf6e8;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #000;
+        }
+        .message {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            min-height: 20px;
+        }
+        .success { color: #15803d; }
+        .error { color: #b91c1c; }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #6a6760;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        .back-link:hover {
+            color: #1a1815;
+            text-decoration: underline;
+        }
+        
+        .user-info {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN FORM -->
+    <div class="login-box" id="auth-form-container">
+        <h1>Welcome.</h1>
+        <p>Log in or sign up to Verv.</p>
+        
+        <form id="auth-form">
+            <input type="email" id="email" placeholder="you@example.com" required>
+            <input type="password" id="password" placeholder="Your password" required>
+            <button type="submit" id="submit-btn">Log In / Sign Up</button>
+        </form>
+        
+        <div class="message" id="message"></div>
+        <!-- FIXED BACK LINK FOR SUBFOLDER -->
+        <a href="/verv.reads/index.html" class="back-link">← Back to Home</a>
+    </div>
+
+    <!-- LOGGED IN VIEW -->
+    <div class="login-box user-info" id="logged-in-container">
+        <h1>You're in.</h1>
+        <p>Logged in as: <strong id="user-email"></strong></p>
+        <button id="logout-btn" style="margin-top: 20px;">Log Out</button>
+        <!-- FIXED BACK LINK FOR SUBFOLDER -->
+        <a href="/verv.reads/index.html" class="back-link">← Back to Home</a>
+    </div>
+
+    <!-- SUPABASE LOGIC -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+        // Your Supabase credentials
+        const supabaseUrl = 'https://tujxkdzqbswrsvcjrnvx.supabase.co'
+        const supabaseKey = 'sb_publishable_iqxzx373BPW-yI-MsA_27A_PvsQdGox'
+        const supabase = createClient(supabaseUrl, supabaseKey)
+
+        const authForm = document.getElementById('auth-form')
+        const messageEl = document.getElementById('message')
+        const emailInput = document.getElementById('email')
+        const passwordInput = document.getElementById('password')
+        const submitBtn = document.getElementById('submit-btn')
+        
+        const formContainer = document.getElementById('auth-form-container')
+        const loggedInContainer = document.getElementById('logged-in-container')
+        const userEmailSpan = document.getElementById('user-email')
+        const logoutBtn = document.getElementById('logout-btn')
+
+        // Check if user is already logged in when page loads
+        async function checkSession() {
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session) {
+                showLoggedIn(session.user.email)
+            }
+        }
+        checkSession()
+
+        // Handle Login / Sign up
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            submitBtn.textContent = 'Please wait...'
+            submitBtn.disabled = true
+            messageEl.textContent = ''
+            messageEl.className = 'message'
+
+            const email = emailInput.value
+            const password = passwordInput.value
+
+            // Try to log in
+            let { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            })
+
+            // If login fails, try to sign up (create account)
+            if (error && error.message.includes('Invalid login credentials')) {
+                const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                })
+                
+                if (signUpError) {
+                    messageEl.textContent = signUpError.message
+                    messageEl.className = 'message error'
+                } else {
+                    messageEl.textContent = 'Account created! Logging you in...'
+                    messageEl.className = 'message success'
+                    // Automatically log them in after sign up
+                    const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password,
+                    })
+                    if (loginData.session) {
+                        showLoggedIn(loginData.session.user.email)
+                    }
+                }
+            } else if (error) {
+                messageEl.textContent = error.message
+                messageEl.className = 'message error'
+            } else if (data.session) {
+                messageEl.textContent = 'Logged in successfully!'
+                messageEl.className = 'message success'
+                showLoggedIn(data.session.user.email)
+            }
+
+            submitBtn.textContent = 'Log In / Sign Up'
+            submitBtn.disabled = false
+        })
+
+        // Handle Logout
+        logoutBtn.addEventListener('click', async () => {
+            await supabase.auth.signOut()
+            loggedInContainer.style.display = 'none'
+            formContainer.style.display = 'block'
+            emailInput.value = ''
+            passwordInput.value = ''
+            messageEl.textContent = ''
+        })
+
+        function showLoggedIn(email) {
+            formContainer.style.display = 'none'
+            loggedInContainer.style.display = 'block'
+            userEmailSpan.textContent = email
+        }
+    </script>
+
+</body>
+</html>
