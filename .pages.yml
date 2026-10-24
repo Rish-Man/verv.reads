@@ -1,6 +1,7 @@
 media:
   input: images
   output: images
+  publicPath: /images
   rename: true
 
 content:
