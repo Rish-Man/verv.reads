@@ -409,7 +409,7 @@ layout: null
         <div class="dish">
             {% if dish.image %}
             <div class="dish-image">
-                <img src="{{ dish.image | relative_url }}" alt="{{ dish.name }}" loading="lazy" onerror="this.parentElement.style.display='none'">
+                <img src="{{ dish.image }}" alt="{{ dish.name }}" class="dish-photo" loading="lazy" onerror="this.parentElement.style.display='none'">
             </div>
             {% endif %}
 
@@ -507,6 +507,29 @@ layout: null
     <a href="https://instagram.com/verv.reads" target="_blank" class="support-btn">
         ☕ Support the Writer
     </a>
+
+    <!-- BULLETPROOF IMAGE FIX -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const baseUrl = "https://rish-man.github.io/verv.reads";
+            const images = document.querySelectorAll('.dish-photo');
+            
+            images.forEach(img => {
+                let src = img.getAttribute('src');
+                if (src) {
+                    // If it doesn't start with http, it's a local path.
+                    // Force it to start with a slash, then prepend the full domain.
+                    if (!src.startsWith('http')) {
+                        // Remove leading slash if it exists so we don't get double slashes
+                        if (src.startsWith('/')) {
+                            src = src.substring(1);
+                        }
+                        img.src = baseUrl + '/' + src;
+                    }
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
