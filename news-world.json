@@ -2,6 +2,36 @@
   "source": "world",
   "items": [
     {
+      "title": "Fresh clashes rock France as protesters march on",
+      "link": "https://www.thehindu.com/news/international/fresh-clashes-rock-france-as-protesters-march-on/article71622465.ece",
+      "date": "Sun, 25 Oct 2026 07:51:56 +0530"
+    },
+    {
+      "title": "Obama blasts Trump’s ‘chaos and cruelty’ while campaigning for Democrats",
+      "link": "https://www.thehindu.com/news/international/obama-blasts-trumps-chaos-and-cruelty-while-campaigning-for-democrats/article71622458.ece",
+      "date": "Sun, 25 Oct 2026 06:55:14 +0530"
+    },
+    {
+      "title": "Indonesia cuts pipeline gas exports to Singapore by about 9%",
+      "link": "https://www.thehindu.com/news/international/indonesia-cuts-pipeline-gas-exports-to-singapore-by-about-9/article71621477.ece",
+      "date": "Sun, 25 Oct 2026 03:54:04 +0530"
+    },
+    {
+      "title": "Trump casts his midterm ballot early in Florida",
+      "link": "https://www.thehindu.com/news/international/trump-casts-his-midterm-ballot-early-in-florida/article71621475.ece",
+      "date": "Sun, 25 Oct 2026 03:09:21 +0530"
+    },
+    {
+      "title": "Houthis say attacked Saudi Arabia, Yemen’s Aden after deadly strikes",
+      "link": "https://www.thehindu.com/news/international/houthis-attack-yemens-aden-say-saudi-strikes-kill-16/article71620895.ece",
+      "date": "Sun, 25 Oct 2026 02:47:02 +0530"
+    },
+    {
+      "title": " Starshield | The non-state sovereigns",
+      "link": "https://www.thehindu.com/news/international/profiles-starshield-the-non-state-sovereigns/article71621149.ece",
+      "date": "Sun, 25 Oct 2026 01:42:51 +0530"
+    },
+    {
       "title": "Albanian police fire tear gas as anti-government student protests turn violent",
       "link": "https://www.thehindu.com/news/international/albanian-police-fire-tear-gas-as-anti-government-student-protests-turn-violent/article71621342.ece",
       "date": "Sun, 25 Oct 2026 00:43:56 +0530"
@@ -10,36 +40,6 @@
       "title": "Iran vows ‘apocalyptic war’ if U.S. strikes again",
       "link": "https://www.thehindu.com/news/international/iran-warns-of-apocalyptic-war-if-attacked-again/article71620849.ece",
       "date": "Sun, 25 Oct 2026 00:32:40 +0530"
-    },
-    {
-      "title": "Protests in France | Beginning of the end of Macronism",
-      "link": "https://www.thehindu.com/news/international/france-october-17-protest-the-hindu-profiles/article71621130.ece",
-      "date": "Sat, 24 Oct 2026 23:20:53 +0530"
-    },
-    {
-      "title": "Iran Speaker to skip BRICS meet, as Iran seeks bilateral air route for ‘humanitarian aid’ from India",
-      "link": "https://www.thehindu.com/news/national/irans-ghalibaf-will-not-attend-brics-parliamentary-forum-in-delhi-embassy/article71619999.ece",
-      "date": "Sat, 24 Oct 2026 22:39:33 +0530"
-    },
-    {
-      "title": "Around 1,200 Palestinians are displaced in Hebron as Israel begins military operation",
-      "link": "https://www.thehindu.com/news/international/israel-launches-major-west-bank-operation-after-soldiers-killed/article71619178.ece",
-      "date": "Sat, 24 Oct 2026 21:39:24 +0530"
-    },
-    {
-      "title": "Iran president says many struggling for food as war bites",
-      "link": "https://www.thehindu.com/news/international/iran-president-says-many-struggling-for-food-as-war-bites/article71620956.ece",
-      "date": "Sat, 24 Oct 2026 21:29:24 +0530"
-    },
-    {
-      "title": "Ukraine has ‘stable connection’ to Starlink: govt",
-      "link": "https://www.thehindu.com/news/international/ukraine-says-starlink-back-to-normal-after-week-of-throttling/article71619764.ece",
-      "date": "Sat, 24 Oct 2026 21:18:15 +0530"
-    },
-    {
-      "title": "France protests: Police say 1,10,000 marched in Paris",
-      "link": "https://www.thehindu.com/news/international/police-fire-tear-gas-as-new-french-protests-kick-off/article71619959.ece",
-      "date": "Sat, 24 Oct 2026 21:11:15 +0530"
     }
   ]
 }
