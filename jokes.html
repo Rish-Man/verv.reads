@@ -159,7 +159,10 @@ layout: null
             flex-shrink: 0;
         }
 
-        .ad-body { flex: 1; min-width: 0; }
+        .ad-body {
+            flex: 1;
+            min-width: 0;
+        }
 
         .ad-title {
             font-family: 'Poppins', sans-serif;
@@ -191,7 +194,10 @@ layout: null
             border-radius: 50px;
             transition: background 0.3s ease, transform 0.3s ease;
         }
-        .ad-box:hover .ad-cta { background: #1a5cd4; transform: translateY(-1px); }
+        .ad-box:hover .ad-cta {
+            background: #1a5cd4;
+            transform: translateY(-1px);
+        }
 
         .ad-disclosure {
             display: block;
@@ -207,16 +213,16 @@ layout: null
             position: fixed; bottom: 20px; right: 20px;
             display: inline-flex; align-items: center; gap: 8px;
             padding: 14px 22px;
-            background: #ffffff !important; color: #000000 !important;
+            background: #2c2a26 !important; color: #fcf6e8 !important;
             font-family: 'Poppins', sans-serif;
             font-size: 0.85rem; font-weight: 600;
             border-radius: 50px;
-            box-shadow: 0 6px 20px rgba(255,255,255,0.25);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             z-index: 999;
             -webkit-tap-highlight-color: transparent;
         }
-        .support-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(255,255,255,0.4); color: #000000 !important; }
+        .support-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.35); color: #fcf6e8 !important; }
 
         footer {
             background: #fcf6e8;
@@ -226,7 +232,10 @@ layout: null
             margin-top: 60px;
         }
 
-        .footer-inner { max-width: 900px; margin: 0 auto; }
+        .footer-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
         .footer-logo {
             font-family: 'Abril Fatface', cursive;
@@ -349,7 +358,11 @@ layout: null
                 <span class="divider-dot">•</span>
                 <a href="songs.html">Songs</a>
                 <span class="divider-dot">•</span>
+                <a href="eats.html">The Eats</a>
+                <span class="divider-dot">•</span>
                 <a href="news.html">News</a>
+                <span class="divider-dot">•</span>
+                <a href="login.html">Login</a>
                 <span class="divider-dot">•</span>
                 <a href="https://rish-man.github.io/SDG-Theme-based-Games/" target="_blank">SDG Games</a>
                 <span class="divider-dot">•</span>
@@ -379,13 +392,10 @@ layout: null
     <a href="https://instagram.com/verv.reads" target="_blank" class="support-btn">
         ☕ Support the Writer
     </a>
+
     <!-- UNIVERSAL BACKGROUND AUDIO -->
-    <audio id="bg-audio" loop>
-        <!-- The source will be set by the script based on the page -->
-    </audio>
-    
-    <!-- Floating Audio Button -->
-    <button class="audio-btn" id="audioBtn" title="Toggle Music" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; background: #2c2a26; padding: 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; color: white; display: flex; align-items: center; justify-content: center;">
+    <audio id="bg-audio" loop></audio>
+    <button class="audio-btn" id="audioBtn" title="Toggle Music" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; background: #2c2a26; padding: 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
         <svg class="icon-muted" viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: currentColor;">
             <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
         </svg>
@@ -401,9 +411,8 @@ layout: null
             const iconMuted = audioBtn.querySelector('.icon-muted');
             const iconPlaying = audioBtn.querySelector('.icon-playing');
             
-            // 1. Figure out which page we are on
             const path = window.location.pathname;
-            let audioFile = 'music-home.mp3'; // Default
+            let audioFile = 'music-home.mp3';
 
             if (path.includes('originals')) audioFile = 'music-stories.mp3';
             else if (path.includes('jokes')) audioFile = 'music-jokes.mp3';
@@ -411,21 +420,16 @@ layout: null
             else if (path.includes('eats')) audioFile = 'music-eats.mp3';
             else if (path.includes('news')) audioFile = 'music-news.mp3';
 
-            // 2. Set the audio source dynamically
             const source = document.createElement('source');
             source.src = audioFile;
             source.type = 'audio/mpeg';
             bgAudio.appendChild(source);
             
-            // 3. Set volume
             bgAudio.volume = 0.5;
-
-            // 4. Check if user paused the music previously
             const isPaused = sessionStorage.getItem('verv-music-paused') === 'true';
 
             if (!isPaused) {
-                // Try to play automatically
-                bgAudio.load(); // Load the new source
+                bgAudio.load();
                 bgAudio.play().then(() => {
                     iconMuted.style.display = 'none';
                     iconPlaying.style.display = 'block';
@@ -438,7 +442,6 @@ layout: null
                 iconPlaying.style.display = 'none';
             }
 
-            // 5. Play/Pause Toggle
             audioBtn.addEventListener('click', function() {
                 if (bgAudio.paused) {
                     bgAudio.play();
@@ -454,5 +457,6 @@ layout: null
             });
         });
     </script>
+
 </body>
 </html>
