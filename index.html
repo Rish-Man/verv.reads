@@ -788,8 +788,8 @@ layout: null
                 <p class="personal-note">No gatekeeping here. Oh btw, I am also not a great writer. It's just something I do for passing time.</p>
             </div>
 
-            <!-- FIXED: Just grab the latest joke, no date comparison -->
-            {% assign latest_joke = site.jokes | sort: "date" | reverse | first %}
+            <!-- SORT BY FILE NAME INSTEAD OF DATE TO GRAB THE TRULY NEWEST JOKE -->
+            {% assign latest_joke = site.jokes | sort: "name" | reverse | first %}
             
             <div class="joke-of-day">
                 <div class="joke-label">Joke of the Day</div>
