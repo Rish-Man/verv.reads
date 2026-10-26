@@ -223,7 +223,7 @@ layout: null
 
         {% assign sorted_jokes = site.jokes | sort: "date" | reverse %}
         {% for joke in sorted_jokes %}
-        <!-- The slugify filter turns the setup text into a unique ID for the database -->
+        <!-- The slugify filter turns the setup text into a unique, short ID -->
         <div class="joke" data-joke-id="{{ joke.setup | slugify }}">
             <p class="setup">{{ joke.setup }}</p>
             {% for p in joke.punchlines %}
@@ -349,6 +349,7 @@ layout: null
                     iconMuted.style.display = 'none';
                     iconPlaying.style.display = 'block';
                 }).catch(() => {
+                    // If browser blocks autoplay, just show the playing icon anyway so user knows it's ready
                     iconMuted.style.display = 'none';
                     iconPlaying.style.display = 'block';
                 });
@@ -419,7 +420,6 @@ layout: null
                 
                 countSpan.textContent = likeCounts[jokeId] || 0;
 
-                // If they already liked it, lock the button
                 if (currentUser && userLikes.has(jokeId)) {
                     btn.classList.add('liked');
                     btn.disabled = true;
@@ -428,42 +428,40 @@ layout: null
         }
 
         // 3. Handle the click
-        document.addEventListener('click', function(e) {
-            // Find if the clicked element (or its parent) is a like button
+        document.addEventListener('click', async function(e) {
             const btn = e.target.closest('.like-btn');
-            if (!btn) return; // If they clicked somewhere else, ignore
+            if (!btn) return; 
 
-            // 1. Check if logged in
             if (!currentUser) {
-                // Redirect instantly
                 window.location.href = '/verv.reads/login.html';
                 return;
             }
 
-            // 2. If already liked, ignore
             if (btn.disabled) return;
 
-            // 3. Update UI
             const jokeId = btn.getAttribute('data-joke-id');
             const countSpan = btn.querySelector('.like-count');
             
-            btn.classList.add('liked');
+            // Disable button instantly so they can't spam click
             btn.disabled = true;
+            btn.classList.add('liked');
             countSpan.textContent = parseInt(countSpan.textContent) + 1;
 
-            // 4. Save to Database
-            supabase.from('likes').insert([
+            // Send to Database
+            const { error } = await supabase.from('likes').insert([
                 { joke_id: jokeId, user_id: currentUser.id }
-            ]).then(({ error }) => {
-                if (error) {
-                    console.error('Error saving like:', error);
-                    // Undo the UI changes if it fails
-                    btn.classList.remove('liked');
-                    btn.disabled = false;
-                    countSpan.textContent = parseInt(countSpan.textContent) - 1;
-                    alert("Could not save your like. Check the database.");
-                }
-            });
+            ]);
+
+            if (error) {
+                console.error('Error saving like:', error);
+                // Revert if it fails
+                btn.classList.remove('liked');
+                btn.disabled = false;
+                countSpan.textContent = parseInt(countSpan.textContent) - 1;
+                
+                // Show the actual error message
+                alert("Database Error: " + error.message);
+            }
         });
 
         // Start
