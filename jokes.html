@@ -8,15 +8,6 @@ layout: null
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jokes | Verv</title>
     
-    <meta name="application-name" content="Verv">
-    <meta name="description" content="Short jokes worth retelling. New ones added regularly.">
-    <meta property="og:site_name" content="Verv">
-    <meta property="og:title" content="Jokes | Verv">
-    <meta property="og:description" content="Short jokes worth retelling. New ones added regularly.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://rish-man.github.io/verv.reads/jokes.html">
-    <meta property="og:image" content="https://rish-man.github.io/verv.reads/verv-favicon.png">
-    
     <link rel="shortcut icon" href="verv-favicon.png">
     <link rel="icon" type="image/png" href="verv-favicon.png">
     <link rel="apple-touch-icon" href="verv-favicon.png">
@@ -233,16 +224,14 @@ layout: null
 
         {% assign sorted_jokes = site.jokes | sort: "date" | reverse %}
         {% for joke in sorted_jokes %}
-        <!-- We use the joke setup as a unique ID for the likes -->
         <div class="joke" data-joke-id="{{ joke.setup | slugify }}">
             <p class="setup">{{ joke.setup }}</p>
             {% for p in joke.punchlines %}
             <p class="punchline">{{ p.line }}</p>
             {% endfor %}
             
-            <!-- LIKE BUTTON -->
             <div class="like-container">
-                <button class="like-btn" data-joke-id="{{ joke.setup | slugify }}">
+                <button class="like-btn" data-joke-id="{{ joke.setup | slugify }}" type="button">
                     <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     <span class="like-count">0</span>
                 </button>
@@ -318,6 +307,73 @@ layout: null
         ☕ Support the Writer
     </a>
 
+    <!-- 1. BACKGROUND AUDIO SETUP -->
+    <audio id="bg-audio" loop></audio>
+    <button class="audio-btn" id="audioBtn" title="Toggle Music" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; background: #2c2a26; padding: 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+        <svg class="icon-muted" viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: currentColor;">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+        </svg>
+        <svg class="icon-playing" viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #7dd3fc; display: none;">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+    </button>
+
+    <script>
+        // AUDIO LOGIC
+        document.addEventListener("DOMContentLoaded", function() {
+            const bgAudio = document.getElementById('bg-audio');
+            const audioBtn = document.getElementById('audioBtn');
+            const iconMuted = audioBtn.querySelector('.icon-muted');
+            const iconPlaying = audioBtn.querySelector('.icon-playing');
+            
+            const path = window.location.pathname;
+            let audioFile = 'music-home.mp3';
+
+            if (path.includes('originals')) audioFile = 'music-stories.mp3';
+            else if (path.includes('jokes')) audioFile = 'music-jokes.mp3';
+            else if (path.includes('songs')) audioFile = 'music-songs.mp3';
+            else if (path.includes('eats')) audioFile = 'music-eats.mp3';
+            else if (path.includes('news')) audioFile = 'music-news.mp3';
+
+            const source = document.createElement('source');
+            source.src = audioFile;
+            source.type = 'audio/mpeg';
+            bgAudio.appendChild(source);
+            
+            bgAudio.volume = 0.5;
+            const isPaused = sessionStorage.getItem('verv-music-paused') === 'true';
+
+            if (!isPaused) {
+                bgAudio.load();
+                bgAudio.play().then(() => {
+                    iconMuted.style.display = 'none';
+                    iconPlaying.style.display = 'block';
+                }).catch(() => {
+                    iconMuted.style.display = 'none';
+                    iconPlaying.style.display = 'block';
+                });
+            } else {
+                iconMuted.style.display = 'block';
+                iconPlaying.style.display = 'none';
+            }
+
+            audioBtn.addEventListener('click', function() {
+                if (bgAudio.paused) {
+                    bgAudio.play();
+                    iconMuted.style.display = 'none';
+                    iconPlaying.style.display = 'block';
+                    sessionStorage.setItem('verv-music-paused', 'false');
+                } else {
+                    bgAudio.pause();
+                    iconMuted.style.display = 'block';
+                    iconPlaying.style.display = 'none';
+                    sessionStorage.setItem('verv-music-paused', 'true');
+                }
+            });
+        });
+    </script>
+
+    <!-- 2. SUPABASE LIKES LOGIC -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -327,8 +383,8 @@ layout: null
 
         let currentUser = null;
 
-        // 1. Check who is logged in
-        async function initLikes() {
+        // Check Auth FIRST
+        async function checkAuth() {
             const { data: { session } } = await supabase.auth.getSession()
             if (session) {
                 currentUser = session.user;
@@ -336,9 +392,8 @@ layout: null
             loadLikes();
         }
 
-        // 2. Fetch likes from the database and display them
+        // Load Likes
         async function loadLikes() {
-            // Get total likes for each joke
             const { data: allLikes, error } = await supabase
                 .from('likes')
                 .select('joke_id, user_id');
@@ -348,7 +403,6 @@ layout: null
                 return;
             }
 
-            // Count them up
             const likeCounts = {};
             const userLikes = new Set();
 
@@ -359,61 +413,49 @@ layout: null
                 }
             });
 
-            // Update the HTML for every button
             document.querySelectorAll('.like-btn').forEach(btn => {
                 const jokeId = btn.getAttribute('data-joke-id');
                 const countSpan = btn.querySelector('.like-count');
                 
-                // Set count
                 countSpan.textContent = likeCounts[jokeId] || 0;
 
-                // Check if this user already liked it
                 if (currentUser && userLikes.has(jokeId)) {
                     btn.classList.add('liked');
-                    btn.disabled = true; // Stop them from clicking again
-                } else if (!currentUser) {
-                    // If not logged in, disable it visually
-                    btn.title = "Log in to like this";
+                    btn.disabled = true;
                 }
 
-                // Add click listener
-                btn.addEventListener('click', () => handleLike(btn, jokeId));
+                // Attach the click event here
+                btn.addEventListener('click', () => {
+                    if (!currentUser) {
+                        window.location.href = '/verv.reads/login.html';
+                        return;
+                    }
+
+                    if (btn.disabled) return;
+
+                    // Update UI
+                    btn.classList.add('liked');
+                    btn.disabled = true;
+                    countSpan.textContent = parseInt(countSpan.textContent) + 1;
+
+                    // Save to DB
+                    supabase.from('likes').insert([
+                        { joke_id: jokeId, user_id: currentUser.id }
+                    ]).then(({ error }) => {
+                        if (error) {
+                            console.error('Error:', error);
+                            // Revert UI if failed
+                            btn.classList.remove('liked');
+                            btn.disabled = false;
+                            countSpan.textContent = parseInt(countSpan.textContent) - 1;
+                            alert("Could not save your like. Make sure you ran the SQL command.");
+                        }
+                    });
+                });
             });
         }
 
-        // 3. Handle the click event
-        async function handleLike(btn, jokeId) {
-            if (!currentUser) {
-                // If guest clicks, send them to login
-                window.location.href = '/verv.reads/login.html';
-                return;
-            }
-
-            // Optimistic UI update (make it feel instant)
-            btn.classList.add('liked');
-            btn.disabled = true;
-            const countSpan = btn.querySelector('.like-count');
-            countSpan.textContent = parseInt(countSpan.textContent) + 1;
-
-            // Save to Supabase
-            const { error } = await supabase
-                .from('likes')
-                .insert([
-                    { joke_id: jokeId, user_id: currentUser.id }
-                ]);
-
-            if (error) {
-                console.error('Error liking:', error);
-                // If it failed, undo the UI change
-                btn.classList.remove('liked');
-                btn.disabled = false;
-                countSpan.textContent = parseInt(countSpan.textContent) - 1;
-                alert("Could not save your like. Please try again.");
-            }
-        }
-
-        // Start everything
-        initLikes();
+        checkAuth();
     </script>
 
 </body>
