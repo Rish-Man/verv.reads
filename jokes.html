@@ -110,6 +110,8 @@ layout: null
             padding-top: 15px;
             border-top: 1px solid rgba(44, 42, 38, 0.08);
         }
+        
+        /* Changed from button to 'a' tag styling */
         .like-btn {
             background: transparent;
             border: none;
@@ -125,6 +127,7 @@ layout: null
             padding: 6px 12px;
             border-radius: 50px;
             background: rgba(44, 42, 38, 0.05);
+            text-decoration: none !important;
         }
         .like-btn:hover {
             background: rgba(44, 42, 38, 0.1);
@@ -138,10 +141,6 @@ layout: null
             width: 16px;
             height: 16px;
             fill: currentColor;
-        }
-        .like-btn:disabled {
-            cursor: wait;
-            opacity: 0.5;
         }
 
         .ad-box {
@@ -230,10 +229,11 @@ layout: null
             {% endfor %}
             
             <div class="like-container">
-                <button class="like-btn" data-joke-id="{{ joke.setup | slugify }}" type="button">
+                <!-- CHANGED TO AN 'A' TAG. If logged out, this link takes them to login.html directly. -->
+                <a href="/verv.reads/login.html" class="like-btn" data-joke-id="{{ joke.setup | slugify }}">
                     <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     <span class="like-count">0</span>
-                </button>
+                </a>
             </div>
         </div>
         {% endfor %}
@@ -372,7 +372,7 @@ layout: null
         });
     </script>
 
-    <!-- 2. SUPABASE LIKES LOGIC (TOGGLE) -->
+    <!-- 2. SUPABASE LIKES LOGIC -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -382,28 +382,22 @@ layout: null
 
         let currentUser = null;
 
-        // 1. Initialize the app
+        // 1. Initialize
         async function init() {
-            // Check user session FIRST
             const { data: { session } } = await supabase.auth.getSession()
             if (session) {
                 currentUser = session.user;
             }
-            
-            // Then load likes
             await loadLikes();
         }
 
-        // 2. Load likes and set up buttons
+        // 2. Load and setup listeners
         async function loadLikes() {
             const { data: allLikes, error } = await supabase
                 .from('likes')
                 .select('joke_id, user_id');
 
-            if (error) {
-                console.error('Error loading likes:', error);
-                return;
-            }
+            if (error) return;
 
             const likeCounts = {};
             const userLikes = new Set();
@@ -421,26 +415,25 @@ layout: null
                 
                 countSpan.textContent = likeCounts[jokeId] || 0;
 
-                // If they already liked it, make it red
                 if (currentUser && userLikes.has(jokeId)) {
                     btn.classList.add('liked');
                 }
 
-                // Add the toggle click event
+                // Handle click
                 btn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-
-                    // Check if logged in
+                    // If logged out, let the HTML <a> tag do the redirect naturally!
                     if (!currentUser) {
-                        window.location.href = '/verv.reads/login.html';
-                        return;
+                        return; 
                     }
 
+                    // If logged in, stop the link from going to login.html and toggle instead
+                    e.preventDefault();
+
                     const isLiked = btn.classList.contains('liked');
-                    btn.disabled = true; // Prevent spam clicking
+                    btn.style.pointerEvents = 'none'; // Prevent double-clicks
 
                     if (isLiked) {
-                        // UN-LIKE
+                        // Unlike
                         btn.classList.remove('liked');
                         countSpan.textContent = parseInt(countSpan.textContent) - 1;
 
@@ -450,13 +443,11 @@ layout: null
                             .match({ joke_id: jokeId, user_id: currentUser.id });
 
                         if (error) {
-                            console.error('Error unliking:', error);
-                            // Revert on failure
                             btn.classList.add('liked');
                             countSpan.textContent = parseInt(countSpan.textContent) + 1;
                         }
                     } else {
-                        // LIKE
+                        // Like
                         btn.classList.add('liked');
                         countSpan.textContent = parseInt(countSpan.textContent) + 1;
 
@@ -465,19 +456,15 @@ layout: null
                             .insert([{ joke_id: jokeId, user_id: currentUser.id }]);
 
                         if (error) {
-                            console.error('Error liking:', error);
-                            // Revert on failure
                             btn.classList.remove('liked');
                             countSpan.textContent = parseInt(countSpan.textContent) - 1;
                         }
                     }
-
-                    btn.disabled = false;
+                    btn.style.pointerEvents = 'auto'; // Re-enable clicking
                 });
             });
         }
 
-        // Start everything
         init();
     </script>
 
