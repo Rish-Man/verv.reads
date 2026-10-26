@@ -102,7 +102,6 @@ layout: null
         }
         .joke .punchline:last-child { margin-bottom: 0; }
 
-        /* LIKE BUTTON STYLES */
         .like-container {
             display: flex;
             align-items: center;
@@ -224,6 +223,7 @@ layout: null
 
         {% assign sorted_jokes = site.jokes | sort: "date" | reverse %}
         {% for joke in sorted_jokes %}
+        <!-- The slugify filter turns the setup text into a unique ID for the database -->
         <div class="joke" data-joke-id="{{ joke.setup | slugify }}">
             <p class="setup">{{ joke.setup }}</p>
             {% for p in joke.punchlines %}
@@ -383,8 +383,8 @@ layout: null
 
         let currentUser = null;
 
-        // Check Auth FIRST
-        async function checkAuth() {
+        // 1. Load the user session
+        async function init() {
             const { data: { session } } = await supabase.auth.getSession()
             if (session) {
                 currentUser = session.user;
@@ -392,7 +392,7 @@ layout: null
             loadLikes();
         }
 
-        // Load Likes
+        // 2. Fetch current counts
         async function loadLikes() {
             const { data: allLikes, error } = await supabase
                 .from('likes')
@@ -419,43 +419,55 @@ layout: null
                 
                 countSpan.textContent = likeCounts[jokeId] || 0;
 
+                // If they already liked it, lock the button
                 if (currentUser && userLikes.has(jokeId)) {
                     btn.classList.add('liked');
                     btn.disabled = true;
                 }
-
-                // Attach the click event here
-                btn.addEventListener('click', () => {
-                    if (!currentUser) {
-                        window.location.href = '/verv.reads/login.html';
-                        return;
-                    }
-
-                    if (btn.disabled) return;
-
-                    // Update UI
-                    btn.classList.add('liked');
-                    btn.disabled = true;
-                    countSpan.textContent = parseInt(countSpan.textContent) + 1;
-
-                    // Save to DB
-                    supabase.from('likes').insert([
-                        { joke_id: jokeId, user_id: currentUser.id }
-                    ]).then(({ error }) => {
-                        if (error) {
-                            console.error('Error:', error);
-                            // Revert UI if failed
-                            btn.classList.remove('liked');
-                            btn.disabled = false;
-                            countSpan.textContent = parseInt(countSpan.textContent) - 1;
-                            alert("Could not save your like. Make sure you ran the SQL command.");
-                        }
-                    });
-                });
             });
         }
 
-        checkAuth();
+        // 3. Handle the click
+        document.addEventListener('click', function(e) {
+            // Find if the clicked element (or its parent) is a like button
+            const btn = e.target.closest('.like-btn');
+            if (!btn) return; // If they clicked somewhere else, ignore
+
+            // 1. Check if logged in
+            if (!currentUser) {
+                // Redirect instantly
+                window.location.href = '/verv.reads/login.html';
+                return;
+            }
+
+            // 2. If already liked, ignore
+            if (btn.disabled) return;
+
+            // 3. Update UI
+            const jokeId = btn.getAttribute('data-joke-id');
+            const countSpan = btn.querySelector('.like-count');
+            
+            btn.classList.add('liked');
+            btn.disabled = true;
+            countSpan.textContent = parseInt(countSpan.textContent) + 1;
+
+            // 4. Save to Database
+            supabase.from('likes').insert([
+                { joke_id: jokeId, user_id: currentUser.id }
+            ]).then(({ error }) => {
+                if (error) {
+                    console.error('Error saving like:', error);
+                    // Undo the UI changes if it fails
+                    btn.classList.remove('liked');
+                    btn.disabled = false;
+                    countSpan.textContent = parseInt(countSpan.textContent) - 1;
+                    alert("Could not save your like. Check the database.");
+                }
+            });
+        });
+
+        // Start
+        init();
     </script>
 
 </body>
