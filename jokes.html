@@ -432,7 +432,6 @@ layout: null
             if (!btn) return; 
 
             // CRITICAL FIX: If the user isn't logged in, instantly redirect. 
-            // Do not attempt to save to the database.
             if (!currentUser) {
                 window.location.href = '/verv.reads/login.html';
                 return;
