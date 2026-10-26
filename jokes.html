@@ -140,7 +140,7 @@ layout: null
             fill: currentColor;
         }
         .like-btn:disabled {
-            cursor: not-allowed;
+            cursor: wait;
             opacity: 0.5;
         }
 
@@ -223,7 +223,6 @@ layout: null
 
         {% assign sorted_jokes = site.jokes | sort: "date" | reverse %}
         {% for joke in sorted_jokes %}
-        <!-- The slugify filter turns the setup text into a unique, short ID -->
         <div class="joke" data-joke-id="{{ joke.setup | slugify }}">
             <p class="setup">{{ joke.setup }}</p>
             {% for p in joke.punchlines %}
@@ -373,7 +372,7 @@ layout: null
         });
     </script>
 
-    <!-- 2. SUPABASE LIKES LOGIC -->
+    <!-- 2. SUPABASE LIKES LOGIC (TOGGLE) -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -383,16 +382,19 @@ layout: null
 
         let currentUser = null;
 
-        // 1. Load the user session explicitly
-        async function checkUser() {
-            const { data: { session } } = await supabase.auth.getSession();
+        // 1. Initialize the app
+        async function init() {
+            // Check user session FIRST
+            const { data: { session } } = await supabase.auth.getSession()
             if (session) {
                 currentUser = session.user;
             }
-            await loadLikes(); // Wait for the check before loading likes
+            
+            // Then load likes
+            await loadLikes();
         }
 
-        // 2. Fetch current counts
+        // 2. Load likes and set up buttons
         async function loadLikes() {
             const { data: allLikes, error } = await supabase
                 .from('likes')
@@ -419,53 +421,64 @@ layout: null
                 
                 countSpan.textContent = likeCounts[jokeId] || 0;
 
+                // If they already liked it, make it red
                 if (currentUser && userLikes.has(jokeId)) {
                     btn.classList.add('liked');
-                    btn.disabled = true;
                 }
+
+                // Add the toggle click event
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+
+                    // Check if logged in
+                    if (!currentUser) {
+                        window.location.href = '/verv.reads/login.html';
+                        return;
+                    }
+
+                    const isLiked = btn.classList.contains('liked');
+                    btn.disabled = true; // Prevent spam clicking
+
+                    if (isLiked) {
+                        // UN-LIKE
+                        btn.classList.remove('liked');
+                        countSpan.textContent = parseInt(countSpan.textContent) - 1;
+
+                        const { error } = await supabase
+                            .from('likes')
+                            .delete()
+                            .match({ joke_id: jokeId, user_id: currentUser.id });
+
+                        if (error) {
+                            console.error('Error unliking:', error);
+                            // Revert on failure
+                            btn.classList.add('liked');
+                            countSpan.textContent = parseInt(countSpan.textContent) + 1;
+                        }
+                    } else {
+                        // LIKE
+                        btn.classList.add('liked');
+                        countSpan.textContent = parseInt(countSpan.textContent) + 1;
+
+                        const { error } = await supabase
+                            .from('likes')
+                            .insert([{ joke_id: jokeId, user_id: currentUser.id }]);
+
+                        if (error) {
+                            console.error('Error liking:', error);
+                            // Revert on failure
+                            btn.classList.remove('liked');
+                            countSpan.textContent = parseInt(countSpan.textContent) - 1;
+                        }
+                    }
+
+                    btn.disabled = false;
+                });
             });
         }
 
-        // 3. Handle the click (Triggered immediately when you click)
-        document.addEventListener('click', async function(e) {
-            const btn = e.target.closest('.like-btn');
-            if (!btn) return; 
-
-            // CRITICAL FIX: If the user isn't logged in, instantly redirect. 
-            if (!currentUser) {
-                window.location.href = '/verv.reads/login.html';
-                return;
-            }
-
-            if (btn.disabled) return;
-
-            const jokeId = btn.getAttribute('data-joke-id');
-            const countSpan = btn.querySelector('.like-count');
-            
-            // Disable button instantly so they can't spam click
-            btn.disabled = true;
-            btn.classList.add('liked');
-            countSpan.textContent = parseInt(countSpan.textContent) + 1;
-
-            // Send to Database
-            const { error } = await supabase.from('likes').insert([
-                { joke_id: jokeId, user_id: currentUser.id }
-            ]);
-
-            if (error) {
-                console.error('Error saving like:', error);
-                // Revert if it fails
-                btn.classList.remove('liked');
-                btn.disabled = false;
-                countSpan.textContent = parseInt(countSpan.textContent) - 1;
-                
-                // Show the actual error message
-                alert("Database Error: " + error.message);
-            }
-        });
-
-        // Start the process
-        checkUser();
+        // Start everything
+        init();
     </script>
 
 </body>
