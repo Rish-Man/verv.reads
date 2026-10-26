@@ -383,13 +383,13 @@ layout: null
 
         let currentUser = null;
 
-        // 1. Load the user session
-        async function init() {
-            const { data: { session } } = await supabase.auth.getSession()
+        // 1. Load the user session explicitly
+        async function checkUser() {
+            const { data: { session } } = await supabase.auth.getSession();
             if (session) {
                 currentUser = session.user;
             }
-            loadLikes();
+            await loadLikes(); // Wait for the check before loading likes
         }
 
         // 2. Fetch current counts
@@ -426,11 +426,13 @@ layout: null
             });
         }
 
-        // 3. Handle the click
+        // 3. Handle the click (Triggered immediately when you click)
         document.addEventListener('click', async function(e) {
             const btn = e.target.closest('.like-btn');
             if (!btn) return; 
 
+            // CRITICAL FIX: If the user isn't logged in, instantly redirect. 
+            // Do not attempt to save to the database.
             if (!currentUser) {
                 window.location.href = '/verv.reads/login.html';
                 return;
@@ -463,8 +465,8 @@ layout: null
             }
         });
 
-        // Start
-        init();
+        // Start the process
+        checkUser();
     </script>
 
 </body>
