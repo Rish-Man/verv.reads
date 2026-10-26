@@ -233,8 +233,8 @@ layout: null
 
         {% assign sorted_jokes = site.jokes | sort: "date" | reverse %}
         {% for joke in sorted_jokes %}
-        <!-- We use the joke title as a unique ID for the likes -->
-        <div class="joke" data-joke-id="{{ joke.title | slugify }}">
+        <!-- We use the joke setup as a unique ID for the likes -->
+        <div class="joke" data-joke-id="{{ joke.setup | slugify }}">
             <p class="setup">{{ joke.setup }}</p>
             {% for p in joke.punchlines %}
             <p class="punchline">{{ p.line }}</p>
@@ -242,7 +242,7 @@ layout: null
             
             <!-- LIKE BUTTON -->
             <div class="like-container">
-                <button class="like-btn" data-joke-id="{{ joke.title | slugify }}">
+                <button class="like-btn" data-joke-id="{{ joke.setup | slugify }}">
                     <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     <span class="like-count">0</span>
                 </button>
@@ -404,7 +404,7 @@ layout: null
 
             if (error) {
                 console.error('Error liking:', error);
-                // If it failed (e.g., they already liked it), undo the UI change
+                // If it failed, undo the UI change
                 btn.classList.remove('liked');
                 btn.disabled = false;
                 countSpan.textContent = parseInt(countSpan.textContent) - 1;
