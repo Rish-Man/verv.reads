@@ -59,6 +59,7 @@ layout: null
             font-family: 'Josefin Sans', sans-serif;
             font-size: 1rem;
             color: #2c2a26;
+            text-align: center;
         }
         input:focus { outline: none; border-color: #1a1815; }
         button {
@@ -83,21 +84,39 @@ layout: null
             text-decoration: none; font-size: 0.85rem;
         }
         .back-link:hover { color: #1a1815; text-decoration: underline; }
+        
+        /* Hide OTP form by default */
+        #otp-form-container { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="login-box" id="auth-form-container">
+    <!-- STEP 1: EMAIL FORM -->
+    <div class="login-box" id="email-form-container">
         <h1>Welcome.</h1>
-        <p>Enter your email to log in or sign up.</p>
+        <p>Enter your email to receive a login code.</p>
         
-        <form id="auth-form">
+        <form id="email-form">
             <input type="email" id="email" placeholder="you@example.com" required>
-            <button type="submit" id="submit-btn">Send Login Link</button>
+            <button type="submit" id="submit-email-btn">Send Code</button>
         </form>
         
-        <div class="message" id="message"></div>
+        <div class="message" id="email-message"></div>
         <a href="/verv.reads/index.html" class="back-link">← Back to Home</a>
+    </div>
+
+    <!-- STEP 2: OTP FORM -->
+    <div class="login-box" id="otp-form-container">
+        <h1>Check your email.</h1>
+        <p>We sent a 6-digit code to <br><strong id="display-email"></strong></p>
+        
+        <form id="otp-form">
+            <input type="text" id="otp-code" placeholder="Enter 6-digit code" maxlength="6" required>
+            <button type="submit" id="submit-otp-btn">Verify Code</button>
+        </form>
+        
+        <div class="message" id="otp-message"></div>
+        <a href="#" id="resend-link" style="display: block; margin-top: 15px; font-size: 0.85rem; color: #6a6760; text-decoration: underline;">Resend Code</a>
     </div>
 
     <script type="module">
@@ -107,39 +126,92 @@ layout: null
         const supabaseKey = 'sb_publishable_iqxzx373BPW-yI-MsA_27A_PvsQdGox'
         const supabase = createClient(supabaseUrl, supabaseKey)
 
-        const authForm = document.getElementById('auth-form')
-        const messageEl = document.getElementById('message')
+        const emailContainer = document.getElementById('email-form-container')
+        const otpContainer = document.getElementById('otp-form-container')
+        const emailForm = document.getElementById('email-form')
+        const otpForm = document.getElementById('otp-form')
+        const emailMessage = document.getElementById('email-message')
+        const otpMessage = document.getElementById('otp-message')
         const emailInput = document.getElementById('email')
-        const submitBtn = document.getElementById('submit-btn')
+        const otpInput = document.getElementById('otp-code')
+        const displayEmail = document.getElementById('display-email')
 
+        // If already logged in, go to profile
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) window.location.href = '/verv.reads/profile.html'
         })
 
-        authForm.addEventListener('submit', async (e) => {
+        // Step 1: Send the Email
+        emailForm.addEventListener('submit', async (e) => {
             e.preventDefault()
-            submitBtn.textContent = 'Sending...'
-            submitBtn.disabled = true
-            messageEl.textContent = ''
-            messageEl.className = 'message'
+            const btn = document.getElementById('submit-email-btn')
+            btn.textContent = 'Sending...'
+            btn.disabled = true
+            emailMessage.textContent = ''
 
             const { error } = await supabase.auth.signInWithOtp({
-                email: emailInput.value,
-                options: {
-                    emailRedirectTo: 'https://rish-man.github.io/verv.reads/profile.html'
-                }
+                email: emailInput.value
             })
 
             if (error) {
-                messageEl.textContent = error.message
-                messageEl.className = 'message error'
+                emailMessage.textContent = error.message
+                emailMessage.className = 'message error'
+                btn.textContent = 'Send Code'
+                btn.disabled = false
             } else {
-                messageEl.textContent = 'Check your email for the login link!'
-                messageEl.className = 'message success'
+                // Switch to OTP screen
+                displayEmail.textContent = emailInput.value
+                emailContainer.style.display = 'none'
+                otpContainer.style.display = 'block'
+                otpInput.focus()
             }
+        })
 
-            submitBtn.textContent = 'Send Login Link'
-            submitBtn.disabled = false
+        // Step 2: Verify the OTP Code
+        otpForm.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            const btn = document.getElementById('submit-otp-btn')
+            btn.textContent = 'Verifying...'
+            btn.disabled = true
+            otpMessage.textContent = ''
+
+            const { data, error } = await supabase.auth.verifyOtp({
+                email: emailInput.value,
+                token: otpInput.value,
+                type: 'email'
+            })
+
+            if (error) {
+                otpMessage.textContent = error.message
+                otpMessage.className = 'message error'
+                btn.textContent = 'Verify Code'
+                btn.disabled = false
+            } else {
+                otpMessage.textContent = 'Success! Redirecting...'
+                otpMessage.className = 'message success'
+                setTimeout(() => {
+                    window.location.href = '/verv.reads/profile.html'
+                }, 1000)
+            }
+        })
+
+        // Resend Code Link
+        document.getElementById('resend-link').addEventListener('click', async (e) => {
+            e.preventDefault()
+            otpMessage.textContent = 'Sending new code...'
+            otpMessage.className = 'message'
+            
+            const { error } = await supabase.auth.signInWithOtp({
+                email: emailInput.value
+            })
+
+            if (error) {
+                otpMessage.textContent = error.message
+                otpMessage.className = 'message error'
+            } else {
+                otpMessage.textContent = 'New code sent!'
+                otpMessage.className = 'message success'
+            }
         })
     </script>
 
@@ -184,8 +256,8 @@ layout: null
                     iconMuted.style.display = 'none';
                     iconPlaying.style.display = 'block';
                 }).catch(() => {
-                    iconMuted.style.display = 'block';
-                    iconPlaying.style.display = 'none';
+                    iconMuted.style.display = 'none';
+                    iconPlaying.style.display = 'block'; // Force playing state visually even if blocked
                 });
             } else {
                 iconMuted.style.display = 'block';
