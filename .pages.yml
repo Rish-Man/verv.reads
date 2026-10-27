@@ -35,7 +35,7 @@ content:
     path: _jokes
     filename: "{primary}.md"
     view:
-      fields: [setup]
+      fields: [setup, date]
     fields:
       - name: setup
         label: Setup line
@@ -50,6 +50,10 @@ content:
             label: Punchline
             type: string
             required: true
+      - name: date
+        label: Date (use format YYYY-MM-DD, e.g. 2026-10-15)
+        type: string
+        required: true
 
   - name: songs
     label: Song Highlights
