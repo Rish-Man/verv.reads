@@ -104,21 +104,23 @@ layout: null
 
         .dish-image {
             width: 100%;
-            aspect-ratio: 16 / 10;
             overflow: hidden;
             background: rgba(44, 42, 38, 0.06);
+            padding: 20px 0;
         }
 
         .dish-image img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
             display: block;
+            margin: 0 auto;
             transition: transform 0.6s ease;
         }
 
         .dish:hover .dish-image img {
-            transform: scale(1.04);
+            transform: scale(1.02);
         }
 
         .dish-content {
@@ -409,7 +411,16 @@ layout: null
         <div class="dish">
             {% if dish.image %}
             <div class="dish-image">
-                <img src="{{ dish.image | relative_url }}" alt="{{ dish.name }}" loading="lazy" onerror="this.parentElement.style.display='none'">
+                {%- comment -%} Build a correct URL for GitHub Pages subfolder {%- endcomment -%}
+                {%- assign img = dish.image -%}
+                {%- if img contains 'http' -%}
+                    {%- assign img_src = img -%}
+                {%- elsif img.first == '/' -%}
+                    {%- assign img_src = site.baseurl | append: img -%}
+                {%- else -%}
+                    {%- assign img_src = site.baseurl | append: '/' | append: img -%}
+                {%- endif -%}
+                <img src="{{ img_src }}" alt="{{ dish.name }}" loading="lazy" onerror="this.parentElement.style.display='none'">
             </div>
             {% endif %}
 
@@ -551,8 +562,8 @@ layout: null
                     iconMuted.style.display = 'none';
                     iconPlaying.style.display = 'block';
                 }).catch(() => {
-                    iconMuted.style.display = 'block';
-                    iconPlaying.style.display = 'none';
+                    iconMuted.style.display = 'none';
+                    iconPlaying.style.display = 'block';
                 });
             } else {
                 iconMuted.style.display = 'block';
