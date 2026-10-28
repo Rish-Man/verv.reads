@@ -1,7 +1,7 @@
 title: Verv
 description: Handpicked stories, jokes, and creative writing.
-baseurl: ""
-url: "https://rish-man.github.io/verv.reads"
+baseurl: "/verv.reads"
+url: "https://rish-man.github.io"
 
 markdown: kramdown
 
