@@ -88,9 +88,6 @@ layout: null
             font-style: italic;
         }
 
-        /* ============================================ */
-        /* AUDIO ADVISORY BANNER                         */
-        /* ============================================ */
         .audio-advisory {
             display: flex;
             align-items: flex-start;
@@ -194,24 +191,6 @@ layout: null
             border: 0;
             display: block;
         }
-
-        .video-overlay-hint {
-            position: absolute;
-            bottom: 8px; left: 8px;
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 50px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .video-frame:hover .video-overlay-hint { opacity: 1; }
 
         .why-section {
             margin-top: 28px;
@@ -446,7 +425,7 @@ layout: null
         <div class="audio-advisory" role="note">
             <span class="advisory-icon">🎧</span>
             <div class="advisory-text">
-                <strong>Heads-up:</strong> Verv's background music may clash with the videos below. We've auto-paused it — but you can also <a href="#" id="pauseVervAudio">turn it off here</a> while you listen to a song.
+                <strong>Heads-up:</strong> Verv's background music will auto-pause when you play a video below. You can also <a href="#" id="pauseVervAudio">turn it off manually</a> while you listen.
             </div>
         </div>
 
@@ -459,14 +438,14 @@ layout: null
 
             {% if song.youtube %}
             <div class="video-frame" data-video-frame>
-                <iframe 
-                    src="https://www.youtube.com/embed/{{ song.youtube }}?rel=0&modestbranding=1"
+                <iframe
+                    id="yt-player-{{ forloop.index }}"
+                    src="https://www.youtube.com/embed/{{ song.youtube }}?rel=0&modestbranding=1&enablejsapi=1&origin=https://rish-man.github.io"
                     title="{{ song.title }}"
                     loading="lazy"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen>
                 </iframe>
-                <span class="video-overlay-hint">Verv audio paused</span>
             </div>
             {% endif %}
 
@@ -563,15 +542,17 @@ layout: null
     </button>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const bgAudio = document.getElementById('bg-audio');
-            const audioBtn = document.getElementById('audioBtn');
-            const iconMuted = audioBtn.querySelector('.icon-muted');
-            const iconPlaying = audioBtn.querySelector('.icon-playing');
+        // ============================================
+        // Verv background audio setup
+        // ============================================
+        const bgAudio = document.getElementById('bg-audio');
+        const audioBtn = document.getElementById('audioBtn');
+        const iconMuted = audioBtn.querySelector('.icon-muted');
+        const iconPlaying = audioBtn.querySelector('.icon-playing');
 
+        (function() {
             const path = window.location.pathname;
             let audioFile = 'music-home.mp3';
-
             if (path.includes('originals')) audioFile = 'music-stories.mp3';
             else if (path.includes('jokes')) audioFile = 'music-jokes.mp3';
             else if (path.includes('songs')) audioFile = 'music-songs.mp3';
@@ -586,7 +567,6 @@ layout: null
             bgAudio.volume = 0.5;
             const isPaused = sessionStorage.getItem('verv-music-paused') === 'true';
 
-            // Small helper — sets icon state and (optionally) plays/pauses
             function setAudioState(playing) {
                 if (playing) {
                     iconMuted.style.display = 'none';
@@ -597,25 +577,24 @@ layout: null
                 }
             }
 
-            // Pause the Verv audio and update state. Used when user interacts with a video.
-            function pauseVervAudio() {
+            window.__pauseVervAudio = function() {
                 if (!bgAudio.paused) {
                     bgAudio.pause();
                     setAudioState(false);
                     sessionStorage.setItem('verv-music-paused', 'true');
                 }
-            }
+            };
 
-            // Auto-play attempt (respecting user's prior pause preference)
+            window.__setVervAudioState = setAudioState;
+
             if (!isPaused) {
                 bgAudio.load();
                 bgAudio.play().then(() => setAudioState(true))
-                    .catch(() => setAudioState(true)); // blocked autoplay — still show "playing" so user can click to start
+                    .catch(() => setAudioState(true));
             } else {
                 setAudioState(false);
             }
 
-            // Manual toggle button
             audioBtn.addEventListener('click', function() {
                 if (bgAudio.paused) {
                     bgAudio.play();
@@ -628,26 +607,51 @@ layout: null
                 }
             });
 
-            // "turn it off here" link in the advisory
             const pauseLink = document.getElementById('pauseVervAudio');
             if (pauseLink) {
                 pauseLink.addEventListener('click', function(e) {
                     e.preventDefault();
-                    pauseVervAudio();
+                    window.__pauseVervAudio();
                     pauseLink.textContent = 'Verv audio is off ✓';
                     pauseLink.style.textDecoration = 'none';
                     pauseLink.style.cursor = 'default';
                 });
             }
+        })();
 
-            // Auto-pause Verv audio when the user clicks on ANY video iframe.
-            // YouTube's iframe is cross-origin so we can't detect "play" directly,
-            // but a click on the video is a reliable signal they're about to watch it.
-            document.querySelectorAll('[data-video-frame]').forEach(frame => {
-                frame.addEventListener('click', pauseVervAudio);
-                frame.addEventListener('touchstart', pauseVervAudio, { passive: true });
-            });
-        });
+        // ============================================
+        // YouTube IFrame API — pause Verv audio on PLAYING
+        // ============================================
+        (function() {
+            const YT_PLAYER_STATE_PLAYING = 1;
+
+            // Called automatically by YouTube IFrame API once loaded
+            window.onYouTubeIframeAPIReady = function() {
+                const iframes = document.querySelectorAll('[data-video-frame] iframe');
+                iframes.forEach(function(iframe) {
+                    new YT.Player(iframe.id, {
+                        events: {
+                            'onStateChange': function(event) {
+                                if (event.data === YT_PLAYER_STATE_PLAYING) {
+                                    // Video started playing — kill Verv audio
+                                    if (window.__pauseVervAudio) {
+                                        window.__pauseVervAudio();
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+            };
+
+            // Load the YouTube IFrame API script (only once)
+            if (!window.YT) {
+                const tag = document.createElement('script');
+                tag.src = 'https://www.youtube.com/iframe_api';
+                const firstScript = document.getElementsByTagName('script')[0];
+                firstScript.parentNode.insertBefore(tag, firstScript);
+            }
+        })();
     </script>
 
 </body>
