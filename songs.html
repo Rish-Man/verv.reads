@@ -84,8 +84,44 @@ layout: null
 
         .page-subtitle {
             text-align: center; color: #6a6760 !important;
-            margin-bottom: 60px; font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+            margin-bottom: 30px; font-size: clamp(0.95rem, 2.5vw, 1.05rem);
             font-style: italic;
+        }
+
+        /* ============================================ */
+        /* AUDIO ADVISORY BANNER                         */
+        /* ============================================ */
+        .audio-advisory {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            max-width: 620px;
+            margin: 0 auto 50px auto;
+            padding: 16px 20px;
+            background: rgba(255, 200, 100, 0.12);
+            border: 1px solid rgba(200, 140, 40, 0.35);
+            border-left: 4px solid #c98a1a;
+            border-radius: 0 10px 10px 0;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: clamp(0.85rem, 2.3vw, 0.95rem);
+            line-height: 1.55;
+            color: #6b4a10 !important;
+        }
+        .audio-advisory .advisory-icon {
+            flex-shrink: 0;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+        .audio-advisory .advisory-text strong {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #4d3308 !important;
+        }
+        .audio-advisory .advisory-text a {
+            color: #6b4a10 !important;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 2px;
         }
 
         .song {
@@ -158,6 +194,24 @@ layout: null
             border: 0;
             display: block;
         }
+
+        .video-overlay-hint {
+            position: absolute;
+            bottom: 8px; left: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 50px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .video-frame:hover .video-overlay-hint { opacity: 1; }
 
         .why-section {
             margin-top: 28px;
@@ -268,6 +322,26 @@ layout: null
             line-height: 1.4;
         }
 
+        .empty-state {
+            background: rgba(44, 42, 38, 0.04);
+            border: 1px dashed rgba(44, 42, 38, 0.15);
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        .empty-state h2 {
+            font-family: 'Abril Fatface', cursive;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: #1a1815 !important;
+            margin-bottom: 12px;
+        }
+        .empty-state p {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 1rem;
+            color: #8a8781 !important;
+            font-style: italic;
+        }
+
         .support-btn {
             position: fixed; bottom: 20px; right: 20px;
             display: inline-flex; align-items: center; gap: 8px;
@@ -356,6 +430,7 @@ layout: null
             .song { padding: 24px 20px; }
             .why-section { padding-left: 16px; }
             .video-frame { border-width: 2px; }
+            .audio-advisory { padding: 14px 16px; }
         }
     </style>
 </head>
@@ -367,6 +442,14 @@ layout: null
         <h1 class="page-heading">Song Highlights</h1>
         <p class="page-subtitle">Songs I keep coming back to — and why they matter.</p>
 
+        <!-- AUDIO ADVISORY -->
+        <div class="audio-advisory" role="note">
+            <span class="advisory-icon">🎧</span>
+            <div class="advisory-text">
+                <strong>Heads-up:</strong> Verv's background music may clash with the videos below. We've auto-paused it — but you can also <a href="#" id="pauseVervAudio">turn it off here</a> while you listen to a song.
+            </div>
+        </div>
+
         {% assign sorted_songs = site.songs | sort: "date" | reverse %}
         {% for song in sorted_songs %}
         <div class="song">
@@ -375,7 +458,7 @@ layout: null
             <span class="artist">{{ song.artist }}</span>
 
             {% if song.youtube %}
-            <div class="video-frame">
+            <div class="video-frame" data-video-frame>
                 <iframe 
                     src="https://www.youtube.com/embed/{{ song.youtube }}?rel=0&modestbranding=1"
                     title="{{ song.title }}"
@@ -383,6 +466,7 @@ layout: null
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen>
                 </iframe>
+                <span class="video-overlay-hint">Verv audio paused</span>
             </div>
             {% endif %}
 
@@ -484,7 +568,7 @@ layout: null
             const audioBtn = document.getElementById('audioBtn');
             const iconMuted = audioBtn.querySelector('.icon-muted');
             const iconPlaying = audioBtn.querySelector('.icon-playing');
-            
+
             const path = window.location.pathname;
             let audioFile = 'music-home.mp3';
 
@@ -498,36 +582,70 @@ layout: null
             source.src = audioFile;
             source.type = 'audio/mpeg';
             bgAudio.appendChild(source);
-            
+
             bgAudio.volume = 0.5;
             const isPaused = sessionStorage.getItem('verv-music-paused') === 'true';
 
-            if (!isPaused) {
-                bgAudio.load();
-                bgAudio.play().then(() => {
+            // Small helper — sets icon state and (optionally) plays/pauses
+            function setAudioState(playing) {
+                if (playing) {
                     iconMuted.style.display = 'none';
                     iconPlaying.style.display = 'block';
-                }).catch(() => {
+                } else {
                     iconMuted.style.display = 'block';
                     iconPlaying.style.display = 'none';
-                });
-            } else {
-                iconMuted.style.display = 'block';
-                iconPlaying.style.display = 'none';
+                }
             }
 
+            // Pause the Verv audio and update state. Used when user interacts with a video.
+            function pauseVervAudio() {
+                if (!bgAudio.paused) {
+                    bgAudio.pause();
+                    setAudioState(false);
+                    sessionStorage.setItem('verv-music-paused', 'true');
+                }
+            }
+
+            // Auto-play attempt (respecting user's prior pause preference)
+            if (!isPaused) {
+                bgAudio.load();
+                bgAudio.play().then(() => setAudioState(true))
+                    .catch(() => setAudioState(true)); // blocked autoplay — still show "playing" so user can click to start
+            } else {
+                setAudioState(false);
+            }
+
+            // Manual toggle button
             audioBtn.addEventListener('click', function() {
                 if (bgAudio.paused) {
                     bgAudio.play();
-                    iconMuted.style.display = 'none';
-                    iconPlaying.style.display = 'block';
+                    setAudioState(true);
                     sessionStorage.setItem('verv-music-paused', 'false');
                 } else {
                     bgAudio.pause();
-                    iconMuted.style.display = 'block';
-                    iconPlaying.style.display = 'none';
+                    setAudioState(false);
                     sessionStorage.setItem('verv-music-paused', 'true');
                 }
+            });
+
+            // "turn it off here" link in the advisory
+            const pauseLink = document.getElementById('pauseVervAudio');
+            if (pauseLink) {
+                pauseLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    pauseVervAudio();
+                    pauseLink.textContent = 'Verv audio is off ✓';
+                    pauseLink.style.textDecoration = 'none';
+                    pauseLink.style.cursor = 'default';
+                });
+            }
+
+            // Auto-pause Verv audio when the user clicks on ANY video iframe.
+            // YouTube's iframe is cross-origin so we can't detect "play" directly,
+            // but a click on the video is a reliable signal they're about to watch it.
+            document.querySelectorAll('[data-video-frame]').forEach(frame => {
+                frame.addEventListener('click', pauseVervAudio);
+                frame.addEventListener('touchstart', pauseVervAudio, { passive: true });
             });
         });
     </script>
