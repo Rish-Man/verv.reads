@@ -2,6 +2,21 @@
   "source": "mumbai",
   "items": [
     {
+      "title": "Mumbai AQI rises from 131 to 278 on Deepavali",
+      "link": "https://www.thehindu.com/news/cities/mumbai/mumbai-aqi-rises-from-131-to-278-on-diwali/article71683687.ece",
+      "date": "Tue, 10 Nov 2026 16:13:22 +0530"
+    },
+    {
+      "title": "Five injured as bus rams into two cars at Wadala traffic signal",
+      "link": "https://www.thehindu.com/news/national/maharashtra/best-bus-crashes-into-two-cars-wadala-lodha-junciton/article71684842.ece",
+      "date": "Tue, 10 Nov 2026 11:12:47 +0530"
+    },
+    {
+      "title": "Six of family killed in fire at home above grocery store in Maharashtra",
+      "link": "https://www.thehindu.com/news/national/maharashtra/six-of-family-killed-in-fire-at-home-above-grocery-store-in-maharashtra/article71683897.ece",
+      "date": "Tue, 10 Nov 2026 02:46:04 +0530"
+    },
+    {
       "title": "Protests in Kolhapur over Gokul Dairy board nominations; election for chairperson today",
       "link": "https://www.thehindu.com/news/cities/mumbai/protests-in-kolhapur-over-gokul-dairy-board-nominations-election-for-chairperson-today/article71683585.ece",
       "date": "Tue, 10 Nov 2026 01:19:08 +0530"
@@ -12,34 +27,19 @@
       "date": "Mon, 09 Nov 2026 21:04:45 +0530"
     },
     {
+      "title": "AQI slips to 'severe' in Delhi; Mumbai, Chennai wake up to smog morning after Deepavali",
+      "link": "https://www.thehindu.com/news/national/post-diwali-air-pollution-delhi-hits-severe-as-air-quality-index-aqi-soars-across-major-indian-cities/article71681352.ece",
+      "date": "Mon, 09 Nov 2026 16:57:02 +0530"
+    },
+    {
       "title": "Major fire breaks out in Mumbai's Dongri, dousing ops on; one dead in November 7 highrise blaze",
       "link": "https://www.thehindu.com/news/cities/mumbai/major-fire-breaks-out-in-mumbais-dongri-dousing-ops-on-one-dead-in-november-7-highrise-blaze/article71681271.ece",
       "date": "Mon, 09 Nov 2026 14:00:33 +0530"
     },
     {
-      "title": "Portion of false ceiling collapses outside Mumbai airport terminal, one hurt",
-      "link": "https://www.thehindu.com/news/national/maharashtra/portion-of-false-ceiling-collapses-outside-mumbai-airport-terminal-one-hurt/article71680978.ece",
-      "date": "Sun, 08 Nov 2026 18:39:19 +0530"
-    },
-    {
-      "title": "Bombay High Court allows BNS Section 75 charge where complainant identifies as woman",
-      "link": "https://www.thehindu.com/news/national/maharashtra/bombay-high-court-allows-bns-section-75-charge-where-complainant-identifies-as-woman/article71678923.ece",
-      "date": "Sun, 08 Nov 2026 11:10:14 +0530"
-    },
-    {
-      "title": "FDA suspends 105 licences, cancels 7 across Maharashtra after pre-Deepavali checks",
-      "link": "https://www.thehindu.com/news/cities/mumbai/fda-suspends-105-licences-cancels-7-across-maharashtra-after-pre-deepavali-checks/article71677623.ece",
-      "date": "Sat, 07 Nov 2026 15:17:43 +0530"
-    },
-    {
-      "title": "Sharad Pawar discharged from Mumbai hospital",
-      "link": "https://www.thehindu.com/news/national/sharad-pawar-discharged-from-mumbai-hospital/article71677827.ece",
-      "date": "Sat, 07 Nov 2026 15:15:43 +0530"
-    },
-    {
-      "title": "Bengaluru IT engineer arrested for threatening Bollywood actors, remanded in police custody till November 10",
-      "link": "https://www.thehindu.com/news/cities/mumbai/bengaluru-it-engineer-arrested-for-threatening-bollywood-actors-remanded-in-police-custody-till-november-10/article71674893.ece",
-      "date": "Sat, 07 Nov 2026 10:38:03 +0530"
+      "title": "Maharashtra relaxes borewell restrictions till December 15 to help farmers save trees amid drought",
+      "link": "https://www.thehindu.com/news/national/maharashtra/maharashtra-relaxes-borewell-restrictions-till-december-15-to-help-farmers-save-trees-amid-drought/article71681480.ece",
+      "date": "Mon, 09 Nov 2026 11:18:51 +0530"
     }
   ]
 }
