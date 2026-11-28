@@ -1,4 +1,6 @@
 ---
 setup: What did one lemon say to another after hurting it?
-date: I'm Sour-ry
+punchlines:
+  - line: I'm Sour-ry
+date: 2026-11-28
 ---
