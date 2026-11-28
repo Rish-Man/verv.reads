@@ -122,7 +122,8 @@ layout: null
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-        const supabaseUrl = 'https://tujxkdzqbswrsvcjrnvx.supabase.co'
+        // --- CHANGED THIS LINE TO YOUR CLOUDFLARE WORKER ---
+        const supabaseUrl = 'https://verv-supabase-proxy.lazermikeyay.workers.dev'
         const supabaseKey = 'sb_publishable_iqxzx373BPW-yI-MsA_27A_PvsQdGox'
         const supabase = createClient(supabaseUrl, supabaseKey)
 
